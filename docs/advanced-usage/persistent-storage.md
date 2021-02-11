@@ -14,9 +14,19 @@ storage:unmount <app> <host-dir:container-dir> # Remove an existing bind mount
 
 > The storage plugin is compatible with storage mounts created with the docker-options. The storage plugin will only list mounts from the deploy/run phase.
 
-## Ideology and Background
+The storage plugin supports the following mount points:
 
-The storage plugin requires explicit paths on the host side. This is intentional to ensure that new users avoid running into unexpected results with implicit paths that may not exist (a feature deprecated in [Docker 1.9.0](https://github.com/docker/docker/releases/tag/v1.9.0])). The container directory is created for the mount point in the container. Any existing directory contents are not accessible after a mount is added to the container. Dokku creates a new directory `/var/lib/dokku/data/storage` during installation, it's the general consensus that new users should use this directory. Mounts are only available at run and deploy times, you must redeploy (restart) an app to mount or unmount to an existing app's container.
+- explicit paths that exist on the host
+- docker volumes
+
+There are a few caveats to using the persistent storage plugin:
+
+- Using implicit paths that do not exist are no longer supported, and actually deprecated in [Docker 1.9.0](https://github.com/docker/docker/releases/tag/v1.9.0). When you specify a persistent storage mount, the host directory is **not** autocreated by either Dokku or Docker.
+- We recommend using the directory `/var/lib/dokku/data/storage` directory as the root host path for mounts, and we create this on Dokku installation.
+- Mounts are only available at run and deploy times, and you **must** redeploy (restart) an app to mount or unmount to an existing app's container.
+- When a directory is mounted, any existing files within the container will be overwritten. If you are writing assets during the build process and then replace the directory with a mount, those files will no longer exist. This is a Docker limitation.
+- Paths are mounted within the container at the root of the disk - `/` - and are **not** relative to `/app` (for buildpacks deploys) or the `WORKDIR` (for Dockerfile/Docker images).
+- For applications using buildpack deploys, the host directory should be owned by the user and group id `32767`. This is due to how permissions within Herokuish - which builds the Docker images - works. For Dockerfile or Docker image deployments, please use the user and group id which corresponds to the one running the process within the container.
 
 ## Usage
 
@@ -27,13 +37,13 @@ This example demonstrates how to mount the recommended directory to `/storage` i
 dokku storage:mount node-js-app /var/lib/dokku/data/storage/node-js-app:/storage
 ```
 
-Dokku will then mount the shared contents of `/var/lib/dokku/data/storage` to `/storage` inside the container.
+Dokku will then mount the shared contents of `/var/lib/dokku/data/storage/node-js-app` to `/storage` inside the container.
 
-Once you have mounted persistent storage, you will also need to restart the application. See the 
+Once you have mounted persistent storage, you will also need to restart the application. See the
 [process scaling documentation](/docs/deployment/process-management.md) for more information.
 
 ```shell
-dokku ps:rebuild app-name
+dokku ps:restart app-name
 ```
 
 A more complete workflow may require making a custom directory for your application and mounting it within your `/app/storage` directory instead. The mount point is *not* relative to your application's working directory, and is instead relative to the root of the container.
@@ -45,7 +55,8 @@ mkdir -p  /var/lib/dokku/data/storage/node-js-app
 # ensure the proper user has access to this directory
 chown -R dokku:dokku /var/lib/dokku/data/storage/node-js-app
 
-# as of 0.7.x, you should chown using the `32767` user and group id
+# as of 0.7.x, you should chown using the `32767` user and group id for buildpack deploys
+# For dockerfile deploys, substitute the user and group id in use within the image
 chown -R 32767:32767 /var/lib/dokku/data/storage/node-js-app
 
 # mount the directory into your container's /app/storage directory, relative to root
@@ -54,7 +65,7 @@ dokku storage:mount app-name /var/lib/dokku/data/storage/node-js-app:/app/storag
 
 You can mount one or more directories as desired by following the above pattern.
 
-### Displaying storage reports about an app
+### Displaying storage reports for an app
 
 > New as of 0.8.1
 
@@ -121,7 +132,7 @@ Your app may have services that are running in memory and need to be backed up l
 By default, Dokku will only bind storage mounts during the deploy and run phases. Under certain conditions, one might want to bind a storage mount during the build phase. This can be accomplished by using the `docker-options` plugin directly.
 
 ```shell
-dokku docker-options:add <app> build "-v /tmp/python-test:/opt/test"
+dokku docker-options:add node-js-app build "-v /tmp/python-test:/opt/test"
 ```
 
 You cannot use mounted volumes during the build phase of a Dockerfile deploy. This is because Docker does not support volumes when executing `docker build`.
@@ -136,4 +147,4 @@ By default, Dokku will execute your buildpack application processes as the `hero
 
 > NOTE: this user must exist in your herokuish image.
 
-Additionally, Dokku will ensure your storage mounts are owned by either `herokuishuser` or the overridden value you have set in `DOKKU_APP_USER`.
+Additionally, the default `docker-local` scheduler that comes with Dokku will ensure your storage mounts are owned by either `herokuishuser` or the overridden value you have set in `DOKKU_APP_USER`. See the [docker-local scheduler documentation](/docs/advanced-usage/schedulers/docker-local.md#disabling-chown-of-persistent-storage) docs for more information.

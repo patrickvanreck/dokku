@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -eo pipefail
+[[ $DOKKU_TRACE ]] && set -x
+source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
+source "$PLUGIN_AVAILABLE_PATH/scheduler-docker-local/internal-functions"
+
+trigger-scheduler-docker-local-scheduler-retire() {
+  declare desc="retires all old containers once they have aged out"
+  declare trigger="scheduler-retire"
+
+  fn-scheduler-docker-local-retire-containers
+  fn-scheduler-docker-local-retire-images
+}
+
+trigger-scheduler-docker-local-scheduler-retire "$@"

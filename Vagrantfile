@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-BOX_NAME = ENV["BOX_NAME"] || "bento/ubuntu-14.04"
+BOX_NAME = ENV["BOX_NAME"] || "bento/ubuntu-18.04"
 BOX_CPUS = ENV["BOX_CPUS"] || "1"
 BOX_MEMORY = ENV["BOX_MEMORY"] || "1024"
 DOKKU_DOMAIN = ENV["DOKKU_DOMAIN"] || "dokku.me"
@@ -31,6 +31,12 @@ Vagrant::configure("2") do |config|
 
   config.vm.provider :vmware_fusion do |v, override|
     v.vmx["memsize"] = BOX_MEMORY
+    v.ssh_info_public = true
+  end
+
+  config.vm.provider :vmware_desktop do |v, override|
+    v.vmx["memsize"] = BOX_MEMORY
+    v.ssh_info_public = true
   end
 
   config.vm.define "empty", autostart: false
@@ -45,9 +51,11 @@ Vagrant::configure("2") do |config|
     vm.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "off"]
       vb.customize ["modifyvm", :id, "--natdnsproxy1", "off"]
+      # enable NAT adapter cable https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=838999
+      vb.customize ["modifyvm", :id, "--cableconnected1", "on"]
     end
 
-    vm.vm.provision :shell, :inline => "export DEBIAN_FRONTEND=noninteractive && apt-get update > /dev/null && apt-get -qq -y install git > /dev/null && cd /root/dokku && #{make_cmd}"
+    vm.vm.provision :shell, :inline => "export DEBIAN_FRONTEND=noninteractive && apt-get update -qq >/dev/null && apt-get -qq -y --no-install-recommends install git build-essential >/dev/null && cd /root/dokku && #{make_cmd}"
     vm.vm.provision :shell, :inline => "cd /root/dokku && make dokku-installer"
     vm.vm.provision :shell do |s|
       s.inline = <<-EOT
@@ -64,8 +72,9 @@ Vagrant::configure("2") do |config|
     vm.vm.network :forwarded_port, guest: 80, host: FORWARDED_PORT
     vm.vm.hostname = "#{DOKKU_DOMAIN}"
     vm.vm.network :private_network, ip: DOKKU_IP
-    vm.vm.provision :shell, :inline => "export DEBIAN_FRONTEND=noninteractive && apt-get update > /dev/null && apt-get -qq -y install git > /dev/null"
-    vm.vm.provision :shell, :inline => "cd /vagrant/ && export DOKKU_BRANCH=`git symbolic-ref -q --short HEAD 2>/dev/null` && export DOKKU_TAG=`git describe --tags --exact-match 2>/dev/null` && cd /root/ && cp /vagrant/bootstrap.sh ./ && bash bootstrap.sh"
+    vm.vm.provision :shell, :inline => "export DEBIAN_FRONTEND=noninteractive && apt-get update -qq >/dev/null && apt-get -qq -y --no-install-recommends install git dos2unix >/dev/null"
+    vm.vm.provision :shell, :inline => "cd /vagrant/ && export DOKKU_BRANCH=`git symbolic-ref -q --short HEAD 2>/dev/null` && export DOKKU_TAG=`git describe --tags --exact-match 2>/dev/null` && cd /root/ && cp /vagrant/bootstrap.sh ./ && dos2unix bootstrap.sh && bash bootstrap.sh"
+    vm.vm.provision :shell, :inline => "cd /root/dokku && make dokku-installer"
   end
 
   config.vm.define "dokku-deb", autostart: false do |vm|
@@ -90,14 +99,16 @@ Vagrant::configure("2") do |config|
     vm.vm.network :forwarded_port, guest: 80, host: FORWARDED_PORT
     vm.vm.hostname = "#{DOKKU_DOMAIN}"
     vm.vm.network :private_network, ip: DOKKU_IP
-    vm.vm.provision :shell, :inline => "export DEBIAN_FRONTEND=noninteractive && apt-get update > /dev/null && apt-get -qq -y install git > /dev/null && cd /root/dokku && #{make_cmd}"
+    vm.vm.provision :shell, :inline => "export DEBIAN_FRONTEND=noninteractive && apt-get update -qq >/dev/null && apt-get -qq -y --no-install-recommends install git >/dev/null && cd /root/dokku && #{make_cmd}"
     vm.vm.provision :shell, :inline => "export IS_RELEASE=true && cd /root/dokku && make deb-all rpm-all"
   end
 
   config.vm.define "build-arch", autostart: false do |vm|
     vm.vm.box = "bugyt/archlinux"
     vm.vm.synced_folder File.dirname(__FILE__), "/dokku"
-    vm.vm.synced_folder "#{File.dirname(__FILE__)}/../dokku-arch", "/dokku-arch"
+    if Pathname.new("#{File.dirname(__FILE__)}/../dokku-arch").exist?
+      vm.vm.synced_folder "#{File.dirname(__FILE__)}/../dokku-arch", "/dokku-arch"
+    end
     vm.vm.network :forwarded_port, guest: 80, host: FORWARDED_PORT
     vm.vm.hostname = "#{DOKKU_DOMAIN}"
     vm.vm.network :private_network, ip: DOKKU_IP

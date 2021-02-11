@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"strings"
 
-	columnize "github.com/ryanuber/columnize"
+	"github.com/dokku/dokku/plugins/common"
 )
 
 const (
 	helpHeader = `Usage: dokku repo[:COMMAND]
 
-Runs commands that interact with the app's repo
+Manage the app's repo
 
 Additional commands:`
 
@@ -29,10 +29,18 @@ func main() {
 
 	cmd := flag.Arg(0)
 	switch cmd {
-	case "repo:help":
+	case "repo", "repo:help":
 		usage()
 	case "help":
-		fmt.Print(helpContent)
+		command := common.NewShellCmd(fmt.Sprintf("ps -o command= %d", os.Getppid()))
+		command.ShowOutput = false
+		output, err := command.Output()
+
+		if err == nil && strings.Contains(string(output), "--all") {
+			fmt.Println(helpContent)
+		} else {
+			fmt.Print("\n    repo, Manage the app's repo\n")
+		}
 	default:
 		dokkuNotImplementExitCode, err := strconv.Atoi(os.Getenv("DOKKU_NOT_IMPLEMENTED_EXIT"))
 		if err != nil {
@@ -44,11 +52,5 @@ func main() {
 }
 
 func usage() {
-	config := columnize.DefaultConfig()
-	config.Delim = ","
-	config.Prefix = "\t"
-	config.Empty = ""
-	content := strings.Split(helpContent, "\n")[1:]
-	fmt.Println(helpHeader)
-	fmt.Println(columnize.Format(content, config))
+	common.CommandUsage(helpHeader, helpContent)
 }

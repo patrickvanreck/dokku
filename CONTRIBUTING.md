@@ -5,13 +5,13 @@ several ways to help out:
 
 * Create an [issue](https://github.com/dokku/dokku/issues) on GitHub, if you
   have found a bug
-* Write test cases for open bug issues
+* Write [test cases](http://dokku.viewdocs.io/dokku/development/testing/) for open bug issues
 * Write patches for open bug/feature issues, preferably with test cases
   included
 * Contribute to the [documentation](http://dokku.viewdocs.io/dokku/)
-* Come up with new ways to show off our [lovely logo](https://avatars1.githubusercontent.com/u/13455795)
+* Come up with new ways, non-commercial to show off our [lovely logo](https://avatars1.githubusercontent.com/u/13455795)
 * Blog about different ways you are using dokku
-* [Sponsor](https://opencollective.com/dokku#support) the Dokku project financially
+* Sponsor the Dokku project financially on [OpenCollective](https://opencollective.com/dokku#support) or [Patreon](https://www.patreon.com/dokku)
 
 There are a few guidelines that we need contributors to follow so that we have
 a chance of keeping on top of things.
@@ -25,7 +25,7 @@ a chance of keeping on top of things.
   * [Which branch to base the work](#which-branch-to-base-the-work)
   * [Submitting Changes](#submitting-changes)
   * [When will my change be merged?](#when-will-my-change-be-merged)
-  * [Test cases and codesniffs](#test-cases-and-codesniffs)
+  * [Running tests locally](#running-tests-locally)
 * [Additional Resources](#additional-resources)
 
 ## Reporting security issues
@@ -55,22 +55,10 @@ doesn't already include that problem or suggestion before submitting an issue.
 If you find a match, add a quick "+1" or "I have this problem too." Doing this
 helps prioritize the most common problems and requests.
 
-When reporting issues, please include your host OS (Ubuntu 14.04, CentOS 7,
-etc). Please include:
-
-* The output of `uname -a`.
-* The output of `free -m`
-* The output of `docker version`.
-* The output of `docker -D info`.
-* The output of `sigil -v`.
-* The output of `docker run --rm -ti gliderlabs/herokuish:latest herokuish version`
-* The output of `dokku version`.
-* The output of `dokku plugin`.
-
-Please also include the steps required to reproduce the problem if possible and
-applicable. This information will help us review and fix your issue faster.
-
-Our Issue Report Template is available [here](https://github.com/dokku/dokku/blob/master/ISSUE_TEMPLATE.md)
+When reporting issues, please include all the information we ask for in our
+[issue template](https://github.com/dokku/dokku/blob/master/ISSUE_TEMPLATE.md).
+Not doing so will prolongue the support period, making it more difficult to support
+you.
 
 ## Contributing
 
@@ -126,7 +114,7 @@ Be patient! The Dokku maintainers will review all pull requests and comment as
 quickly as possible. There may be some back and forth while the details of your
 pull request are discussed.
 
-In the unlikely event that your pull request does not get merged, the dokku
+In the unlikely event that your pull request does not get merged, the Dokku
 maintainers will either provide an alternative patch or guide you towards a
 better solution to the problem at hand.
 
@@ -139,21 +127,10 @@ requests:
 - backwards incompatible change (minor)
 - major feature (minor)
 
-### Test cases and codesniffs
+### Running tests locally
 
-Dokku tests require [bats](https://github.com/sstephenson/bats).
-To run the test cases locally use the following command:
-
-    make ci-dependencies
-    make unit-tests deploy-tests
-
-To run the shellcheck sniffs for Dokku coding standards:
-
-    make ci-dependencies
-    make lint
-
-The [testing docs](http://dokku.viewdocs.io/dokku/development/testing/)
-contains installation info for bats and shellcheck.
+Please read the [testing docs](http://dokku.viewdocs.io/dokku/development/testing/),
+which contains test setup information as well as tips for running tests.
 
 # Additional Resources
 

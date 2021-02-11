@@ -9,16 +9,20 @@ tags:deploy <app> <tag>                        # Deploy tagged app image
 tags:destroy <app> <tag>                       # Remove app image tag
 ```
 
-The Dokku tags plugin allows you to add docker image tags to the currently deployed app image for versioning and subsequent deployment.
+The Dokku tags plugin allows you to add Docker image tags to the currently deployed app image for versioning and subsequent deployment.
 
 > When triggering `dokku ps:rebuild APP` on an application deployed via the `tags` plugin, the following may occur:
 >
 > - Applications previously deployed via another method (`git`/`tar`): The application may revert to a state before the latest custom image tag was deployed.
 > - Applications that were only ever deployed via the `tags` plugin: No action will be taken against your application.
 >
-> Please use the `tags:deploy` command when redeploying an application deployed via docker image.
+> Please use the `tags:deploy` command when redeploying an application deployed via Docker image.
 
 ## Usage
+
+### Exposed ports
+
+See the [port management documentation](/docs/networking/port-management.md) for more information on how Dokku exposes ports for applications and how you can configure these for your app.
 
 ### Listing tags for an application
 
@@ -36,7 +40,7 @@ dokku/node-js-app   latest              936a42f25901        About a minute ago  
 
 ### Creating a tag
 
-You can also create new tags for that app using the `tags:create` function. Tags should conform to the docker tagging specification for your docker version. As of 1.10, that specification is available [here](https://github.com/docker/docker/blob/master/image/spec/v1.1.md), while users of older versions can check the documentation [here](https://github.com/docker/docker/blob/master/image/spec/v1.md).
+You can also create new tags for that app using the `tags:create` function. Tags should conform to the Docker tagging specification for your Docker version. As of 1.10, that specification is available [here](https://github.com/docker/docker/blob/master/image/spec/v1.1.md), while users of older versions can check the documentation [here](https://github.com/docker/docker/blob/master/image/spec/v1.md).
 
 ```shell
 dokku tags:create node-js-app v1
@@ -61,7 +65,9 @@ dokku/node-js-app   v1                  936a42f25901        About a minute ago  
 
 ### Deploying an image tag
 
-Finally, you can also deploy a local image using the `tags:deploy` command.
+Finally, you can also deploy a local image using the `tags:deploy` command. When specifying a tag that is not `latest`, the released image will be retagged as the `latest` image tag for the app.
+
+> Warning: For images based on Herokuish, using the `tags:deploy` command will reset environment variables written into the image, causing a retag to occur. This will - on average - add two extra layers to your deployed image. Note that this does not affect Dockerfile-based images, which are the majority of images deployed via the `tags` command.
 
 ```shell
 dokku tags:deploy node-js-app v1
@@ -86,7 +92,6 @@ dokku tags:deploy node-js-app v1
 -----> Running post-deploy
 -----> Configuring node-js-app.dokku.me...
 -----> Creating http nginx.conf
------> Running nginx-pre-reload
        Reloading nginx
 -----> Shutting down old containers in 60 seconds
 =====> 025eec3fa3b442fded90933d58d8ed8422901f0449f5ea0c23d00515af5d3137
@@ -94,38 +99,35 @@ dokku tags:deploy node-js-app v1
        http://node-js-app.dokku.me
 ```
 
-## Image Workflows
+## Image workflows
 
-### Deploying from a Docker Registry
+### Deploying from a Docker registry
 
-You can alternatively add image pulled from a docker Registry and deploy app from it by using tagging feature. In this example, we are deploying from Docker Hub.
+You can alternatively add image pulled from a Docker registry and deploy from it by using tagging feature. In this example, we are deploying from Docker Hub.
 
-1. Create Dokku app as usual
+1. Create Dokku app as usual.
 
     ```shell
     dokku apps:create test-app
     ```
 
-2. Pull image from Docker Hub
+2. Pull image from Docker Hub.
 
     ```shell
     docker pull demo-repo/some-image:v12
     ```
 
-3. Retag the image to match the created app
+3. Retag the image to match the created app.
 
     ```shell
     docker tag demo-repo/some-image:v12 dokku/test-app:v12
     ```
 
-4. Deploy tag
+4. Deploy tag.
 
     ```shell
     dokku tags:deploy test-app v12
     ```
-
-> Note: When deploying an image, we will use `docker inspect` to extract the `ExposedPorts` configuration and if defined, use that to populate `DOKKU_DOCKERFILE_PORTS`. If this behavior is not desired, you can override that configuration variable with the `config:set` command.
-> Example: `dokku config:set test-app DOKKU_DOCKERFILE_PORTS="5984/tcp 80/tcp"`
 
 ### Deploying an image from CI
 
@@ -134,22 +136,22 @@ artifacts in your repository. For some projects however, building artifacts duri
 to Dokku may affect the performance of running applications.
 
 One solution is to build a finished Docker image on a CI service (or even locally) and deploy
-it directly to the host running dokku.
+it directly to the host running Dokku.
 
-1. Build image on CI (or locally)
+1. Build image on CI (or locally).
 
     ```shell
     docker build -t dokku/test-app:v12 .
     # Note: The image must be tagged `dokku/<app-name>:<version>`
     ```
 
-2. Deploy image to Dokku host
+2. Deploy image to Dokku host.
 
     ```shell
     docker save dokku/test-app:v12 | ssh my.dokku.host "docker load | dokku tags:deploy test-app v12"
     ```
 
-> Note: You can also use a Docker Registry to push and pull
+> Note: You can also use a Docker registry to push and pull
 > the image rather than uploading it directly.
 
 Here's a more complete example using the above method:
@@ -160,10 +162,10 @@ docker build -t dokku/test-app:v12 .
 # copy the image to the dokku host
 docker save dokku/test-app:v12 | bzip2 | ssh my.dokku.host "bunzip2 | docker load"
 # tag and deploy the image
-ssh my.dokku.host "dokku tags:create test-app previous; dokku tags:deploy test-app v12 && dokku tags:create test-app latest"
+ssh my.dokku.host "dokku tags:create test-app previous; dokku tags:deploy test-app v12"
 ```
 
 ## Related articles
-- [Setting up Persistent Storage](/docs/advanced-usage/persistent-storage.md)
-- [Defining Environment Variables](/docs/configuration/environment-variables.md)
-- [Setting up the Ports](/docs/advanced-usage/proxy-management.md)
+- [Setting up persistent storage](/docs/advanced-usage/persistent-storage.md)
+- [Defining environment variables](/docs/configuration/environment-variables.md)
+- [Setting up the ports](/docs/advanced-usage/proxy-management.md)

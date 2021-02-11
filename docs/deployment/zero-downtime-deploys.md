@@ -3,7 +3,6 @@
 > New as of 0.5.0
 
 ```
-checks <app>                             Show zero-downtime status
 checks:disable <app> [process-type(s)]   Disable zero-downtime deployment for all processes (or comma-separated process-type list) ***WARNING: this will cause downtime during deployments***
 checks:enable <app> [process-type(s)]    Enable zero-downtime deployment for all processes (or comma-separated process-type list)
 checks:report [<app>] [<flag>]           Displays a checks report for one or more apps
@@ -11,17 +10,25 @@ checks:run <app> [process-type(s)]       Runs zero-downtime checks for all proce
 checks:skip <app> [process-type(s)]      Skip zero-downtime checks for all processes (or comma-separated process-type list)
 ```
 
-By default, Dokku will wait `10` seconds after starting each container before assuming it is up and proceeding with the deploy. Once this has occurred for all containers started by for an application, traffic will be switched to point to your new containers. Dokku will also wait a further `60` seconds _after_ the deploy is complete before terminating old containers in order to give time for long running connections to terminate. In either case, you may have more than one container running for a given application.
+By default, Dokku will wait `10` seconds after starting each container before assuming it is up and proceeding with the deploy. Once this has occurred for all containers started by an application, traffic will be switched to point to your new containers. Dokku will also wait a further `60` seconds *after* the deploy is complete before terminating old containers in order to give time for long running connections to terminate. In either case, you may have more than one container running for a given application.
 
 You may both create user-defined checks for web processes using a `CHECKS` file, as well as customize any and all parts of this experience using the checks plugin.
 
-## Configuring Check Settings using the `config` plugin
+> Web checks are performed via `curl` on Dokku host. Some application code - such
+> as the Django framework - checks for specific hostnames or header values, these
+> checks will fail. To avoid this:
+>
+> - Remove such checks from your code: Modify your application to remove the hostname check completely.
+> - Allow checks from all hostnames: Modify your application to accept a dynamically provided hostname.
+> - Specify the domain within the check: See below for further documentation.
+
+## Configuring check settings using the `config` plugin
 
 There are certain settings that can be configured via environment variables:
 
 - `DOKKU_DEFAULT_CHECKS_WAIT`: (default: `10`) If no user-defined checks are specified - or if the process being checked is not a `web` process - this is the period of time Dokku will wait before checking that a container is still running.
-- `DOKKU_DOCKER_STOP_TIMEOUT`: (default: `10`) Configurable grace period given to the `docker stop` command. If a container has not stopped by this time, a `kill -9` signal or equivalent is sent in order to force-terminate the container. Both the `ps:stop` and `apps:destroy` commands _also_ respect this value. If not specified, the docker defaults for the [docker stop command](https://docs.docker.com/engine/reference/commandline/stop/) will be used.
-- `DOKKU_WAIT_TO_RETIRE`: (default: `60`) After a successful deploy, the grace period given to old containers before they are stopped/terminated. This is useful for ensuring completion of long-running http connections.
+- `DOKKU_DOCKER_STOP_TIMEOUT`: (default: `10`) Configurable grace period given to the `docker stop` command. If a container has not stopped by this time, a `kill -9` signal or equivalent is sent in order to force-terminate the container. Both the `ps:stop` and `apps:destroy` commands *also* respect this value. If not specified, the Docker defaults for the [`docker stop` command](https://docs.docker.com/engine/reference/commandline/stop/) will be used.
+- `DOKKU_WAIT_TO_RETIRE`: (default: `60`) After a successful deploy, the grace period given to old containers before they are stopped/terminated. This is useful for ensuring completion of long-running HTTP connections.
 
 The following settings may also be specified in the `CHECKS` file, though are available as environment variables in order to ease application reuse.
 
@@ -48,7 +55,7 @@ dokku checks:skip node-js-app worker,web
        DOKKU_CHECKS_SKIPPED: worker,web
 ```
 
-Zero-downtime checks can also be disabled completely. This will stop old containers **before** new ones start, which may result in broken connections and downtime if your application fails to boot properly.
+Zero downtime checks can also be disabled completely. This will stop old containers *before* new ones start, which may result in broken connections and downtime if your application fails to boot properly.
 
 ```shell
 dokku checks:disable node-js-app worker
@@ -62,7 +69,7 @@ dokku checks:disable node-js-app worker
        DOKKU_CHECKS_SKIPPED: web
 ```
 
-### Displaying checks reports about an app
+### Displaying checks reports for an app
 
 > New as of 0.8.1
 
@@ -73,13 +80,13 @@ dokku checks:report
 ```
 
 ```
-=====> search checks information
+=====> node-js-app checks information
        Checks disabled list: none
        Checks skipped list: none          
-=====> python-sample checks information
+=====> python-app checks information
        Checks disabled list: none
        Checks skipped list: none          
-=====> ruby-sample checks information
+=====> ruby-app checks information
        Checks disabled list: _all_
        Checks skipped list: none          
 ```
@@ -87,11 +94,11 @@ dokku checks:report
 You can run the command for a specific app also.
 
 ```shell
-dokku checks:report node-js-sample
+dokku checks:report node-js-app
 ```
 
 ```
-=====> node-js-sample checks information
+=====> node-js-app checks information
        Checks disabled list: none
        Checks skipped list: none          
 ```
@@ -99,25 +106,25 @@ dokku checks:report node-js-sample
 You can pass flags which will output only the value of the specific information you want. For example:
 
 ```shell
-dokku checks:report node-js-sample --checks-disabled-list
+dokku checks:report node-js-app --checks-disabled-list
 ```
 
-## Customizing Checks
+## Customizing checks
 
-If your application needs a longer period to boot up - perhaps to load data into memory, or because of slow boot time - you may also use dokku's `checks` functionality to more precisely check whether an application can serve traffic or not.
+If your application needs a longer period to boot up - perhaps to load data into memory, or because of slow boot time - you may also use Dokku's `checks` functionality to more precisely check whether an application can serve traffic or not.
 
 Checks are run against the detected `web` process from your application's `Procfile`. For non-web processes, Dokku will fallback to the aforementioned process uptime check.
 
 To specify checks, add a `CHECKS` file to the root of your project directory. The `CHECKS` file should be plain text and may contain:
 
-- Check instructions
-- Settings (NAME=VALUE)
-- Comments (lines starting with #)
-- Empty lines
+- check instructions
+- settings (NAME=VALUE)
+- comments (lines starting with #)
+- empty lines
 
-> For dockerfile-based deploys, the file *must* be in `/app/CHECKS` within the container. `/app` is used by default as the root container directory for buildpack-based deploys.
+> For Dockerfile and Docker Image based deploys, the file *must* be in the `WORKDIR` directory of the built image. `/app` is used by default as the root container directory for buildpack-based deploys.
 
-### Check Instructions
+### Check instructions
 
 The format of a check instruction is a path or relative URL, optionally followed by the expected content:
 
@@ -137,20 +144,52 @@ The `CHECKS` file can contain multiple checks:
 To check an application that supports multiple hostnames, use relative URLs that include the hostname:
 
 ```
-//admin.example.com  Admin Dashboard
-//static.example.com/logo.png
+//admin.dokku.me  Admin Dashboard
+//static.dokku.me/logo.png
 ```
 
 You can also specify the protocol to explicitly check HTTPS requests:
 
 ```
-https://admin.example.com  Admin Dashboard
-https://static.example.com/logo.png
+https://admin.dokku.me  Admin Dashboard
+https://static.dokku.me/logo.png
 ```
 
-While a full url may be used in order to invoke checks, if you are using relative urls, the port *must* be omitted.
+While a full URL may be used in order to invoke checks, if you are using relative URLs, the port *must* be omitted.
 
-### Check Settings
+> Changed as of 0.22.5
+
+Please note that dollar sign bracket characters (`{` and `}`) must be escaped when used within a `CHECKS` file. Escaping follows golang template rules. The proper way to do this is via one of the following methods:
+
+```
+# escaping the `{` character
+# using double-quotes
+{{"{"}}
+
+# using raw string constants
+{{`{`}}
+
+# escaping the `}` character
+# using double-quotes
+{{"}"}}
+
+# using raw string constants
+{{`}`}}
+```
+
+### Templating Checks Files
+
+> New as of 0.22.5
+
+An app's `CHECKS` file is sent through a single pass of the [`sigil`](https://github.com/gliderlabs/sigil/) templating tool. This enables usage of Golang templating within application `CHECKS` files. In addition to general templating access, access to app environment variables is also allowed via the `var` function:
+
+```
+{{ var "SOME_ENV_VAR" }}
+```
+
+This may be useful if certain zero-downtime checks require access to an app-specific value, such as a domain name.
+
+### Check settings
 
 The default behavior is to wait for `5` seconds before running the checks, to timeout the checks after `30` seconds, and to attempt the checks `5` times. If the checks fail `5` times, the deployment is considered failed and the old container will continue serving traffic.
 
@@ -164,7 +203,7 @@ ATTEMPTS=10 # Attempt checks 10 times
 /  My Amazing App
 ```
 
-## Manually Invoking Checks
+## Manually invoking checks
 
 Checks can also be manually invoked via the `checks:run` command. This can be used to check the status of an application via cron to provide integration with external healthchecking software.
 
@@ -212,7 +251,7 @@ dokku checks:run node-js-app worker
 -----> Default container check successful!
 ```
 
-An app process id may also be specified:
+An app process ID may also be specified:
 
 ```shell
 dokku checks:run node-js-app web.2
@@ -239,7 +278,7 @@ dokku checks:run node-js-app non-existent
 Invalid process type specified (APP.non-existent)
 ```
 
-Non-existent process ids will *also* result in an error
+Non-existent process IDs will *also* result in an error
 
 ```shell
 dokku checks:run node-js-app web.3
@@ -250,11 +289,11 @@ dokku checks:run node-js-app web.3
 Invalid container id specified (APP.web.3)
 ```
 
-## Example: Successful Rails Deployment
+## Example: Successful Rails deployment
 
-In this example, a Rails application is successfully deployed to dokku. The initial round of checks fails while the server is starting, but once it starts they succeed and the deployment is successful. `WAIT` is set to `10` because our application takes a while to boot up. `ATTEMPTS` is set to `6`, but the third attempt succeeds.
+In this example, a Rails application is successfully deployed to Dokku. The initial round of checks fails while the server is starting, but once it starts they succeed and the deployment is successful. `WAIT` is set to `10` because our application takes a while to boot up. `ATTEMPTS` is set to `6`, but the third attempt succeeds.
 
-### CHECKS file
+### `CHECKS` file
 
 ```
 WAIT=10
@@ -268,9 +307,9 @@ For this check to work, we've added a line to `config/routes.rb` that simply ret
 get '/check.txt', to: proc {[200, {}, ['simple_check']]}
 ```
 
-### Deploy Output
+### Deploy output
 
-> Note: The output has been trimmed for brevity
+> Note: The output has been trimmed for brevity.
 
 ```shell
 git push dokku master
@@ -278,7 +317,7 @@ git push dokku master
 
 ```
 -----> Cleaning up...
------> Building myapp from herokuish...
+-----> Building node-js-app from herokuish...
 -----> Adding BUILD_ENV to build environment...
 -----> Ruby app detected
 -----> Compiling Ruby/Rails
@@ -288,8 +327,8 @@ git push dokku master
 
 -----> Discovering process types
        Procfile declares types -> web
------> Releasing myapp...
------> Deploying myapp...
+-----> Releasing node-js-app...
+-----> Deploying node-js-app...
 -----> Running pre-flight checks
 -----> Attempt 1/6 Waiting for 10 seconds ...
        CHECKS expected result:
@@ -307,7 +346,7 @@ curl: (7) Failed to connect to 172.17.0.155 port 5000: Connection refused
        CHECKS expected result:
        http://localhost/check.txt => "simple_check"
 -----> All checks successful!
-=====> myapp container output:
+=====> node-js-app container output:
        => Booting Thin
        => Rails 4.2.0 application starting in production on http://0.0.0.0:5000
        => Run `rails server -h` for more startup options
@@ -315,24 +354,23 @@ curl: (7) Failed to connect to 172.17.0.155 port 5000: Connection refused
        Thin web server (v1.6.3 codename Protein Powder)
        Maximum connections set to 1024
        Listening on 0.0.0.0:5000, CTRL+C to stop
-=====> end myapp container output
+=====> end node-js-app container output
 -----> Running post-deploy
------> Configuring myapp.dokku.example.com...
+-----> Configuring myapp.dokku.me...
 -----> Creating http nginx.conf
------> Running nginx-pre-reload
        Reloading nginx
 -----> Shutting down old container in 60 seconds
 =====> Application deployed:
-       http://myapp.dokku.example.com
+       http://myapp.dokku.me
 ```
 
-## Example: Failing Rails Deployment
+## Example: Failing Rails deployment
 
-In this example, a Rails application fails to deploy. The reason for the failure is that the postgres database connection fails. The initial checks will fail while we wait for the server to start up, just like in the above example. However, once the server does start accepting connections, we will see an error 500 due to the postgres database connection failure.
+In this example, a Rails application fails to deploy. The reason for the failure is that the PostgreSQL database connection fails. The initial checks will fail while we wait for the server to start up, just like in the above example. However, once the server does start accepting connections, we will see an error 500 due to the PostgreSQL database connection failure.
 
-Once the attempts have been exceeded, the deployment fails and we see the container output, which shows the Postgres connection errors.
+Once the attempts have been exceeded, the deployment fails and we see the container output, which shows the PostgreSQL connection errors.
 
-### CHECKS file
+### `CHECKS` file
 
 ```
 WAIT=10
@@ -340,11 +378,11 @@ ATTEMPTS=6
 /
 ```
 
-> The check to the root url '/' would normally access the database.
+> The check to the root url `/` would normally access the database.
 
-### Deploy Output
+### Deploy output
 
-> Note: The output has been trimmed for brevity
+> Note: The output has been trimmed for brevity.
 
 ```shell
 git push dokku master
@@ -352,7 +390,7 @@ git push dokku master
 
 ```
 -----> Cleaning up...
------> Building myapp from herokuish...
+-----> Building node-js-app from herokuish...
 -----> Adding BUILD_ENV to build environment...
 -----> Ruby app detected
 -----> Compiling Ruby/Rails
@@ -362,8 +400,8 @@ git push dokku master
 
 Discovering process types
 Procfile declares types -> web
-Releasing myapp...
-Deploying myapp...
+Releasing node-js-app...
+Deploying node-js-app...
 Running pre-flight checks
 -----> Attempt 1/6 Waiting for 10 seconds ...
        CHECKS expected result:
@@ -402,7 +440,7 @@ curl: (22) The requested URL returned error: 500 Internal Server Error
 curl: (22) The requested URL returned error: 500 Internal Server Error
 Could not start due to 1 failed checks.
  !    Check attempt 6/6 failed.
-=====> myapp container output:
+=====> node-js-app container output:
        => Booting Thin
        => Rails 4.2.0 application starting in production on http://0.0.0.0:5000
        => Run `rails server -h` for more startup options
@@ -423,9 +461,9 @@ Could not start due to 1 failed checks.
          vendor/bundle/ruby/2.0.0/gems/activerecord-4.2.0/lib/active_record/connection_adapters/postgresql_adapter.rb:242:in `initialize'
          vendor/bundle/ruby/2.0.0/gems/activerecord-4.2.0/lib/active_record/connection_adapters/postgresql_adapter.rb:44:in `new'
          vendor/bundle/ruby/2.0.0/gems/activerecord-4.2.0/lib/active_record/connection_adapters/postgresql_adapter.rb:44:in `postgresql_connection
-=====> end myapp container output
+=====> end node-js-app container output
 /usr/bin/dokku: line 49: 23409 Killed                  dokku deploy "$APP"
-To dokku@dokku.example.com:myapp
+To dokku@dokku.me:myapp
  ! [remote rejected] dokku -> master (pre-receive hook declined)
-error: failed to push some refs to 'dokku@dokku.example.com:myapp'
+error: failed to push some refs to 'dokku@dokku.me:myapp'
 ```

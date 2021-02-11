@@ -4,11 +4,11 @@
   "description": "a basic webscket demo",
   "author": "Luigi Maselli",
   "dependencies": {
-    "express": "3.1.x",
+    "express": "4.17.x",
     "connect": "*",
-    "handlebars": "~1.0.9",
-    "socket.io": "~0.9.13",
-    "express3-handlebars": "~0.2.3"
+    "handlebars": "~4.7.1",
+    "socket.io": "~3.1.0",
+    "express3-handlebars": "~0.5.2"
   },
   "engines": {
     "node": "0.10.x"

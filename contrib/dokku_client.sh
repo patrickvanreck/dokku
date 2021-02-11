@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+set -eo pipefail
+[[ $DOKKU_TRACE ]] && set -x
 export DOKKU_PORT=${DOKKU_PORT:=22}
 export DOKKU_HOST=${DOKKU_HOST:=}
 
@@ -31,8 +32,8 @@ fn-random-name() {
 }
 
 fn-client-help-msg() {
-  echo "==> Configure the DOKKU_HOST environment variable or run $0 from a repository with a git remote named dokku" 1>&2
-  echo "--> i.e. git remote add dokku dokku@<dokku-host>:<app-name>" 1>&2
+  echo "=====> Configure the DOKKU_HOST environment variable or run $0 from a repository with a git remote named dokku"
+  echo "       i.e. git remote add dokku dokku@<dokku-host>:<app-name>"
   exit 20 # exit with specific status. only used in units tests for now
 }
 
@@ -48,7 +49,7 @@ fn-dokku-host() {
   declare DOKKU_GIT_REMOTE="$1" DOKKU_HOST="$2"
 
   if [[ -z "$DOKKU_HOST" ]]; then
-    if [[ -d .git ]] || git rev-parse --git-dir > /dev/null 2>&1; then
+    if [[ -d .git ]] || git rev-parse --git-dir >/dev/null 2>&1; then
       DOKKU_HOST=$(git remote -v 2>/dev/null | grep -Ei "^${DOKKU_GIT_REMOTE}\s" | head -n 1 | cut -f1 -d' ' | cut -f2 -d '@' | cut -f1 -d':' 2>/dev/null || true)
     fi
   fi
@@ -67,10 +68,13 @@ main() {
 
   for arg in "$@"; do
     if [[ "$skip" == "true" ]]; then
-      next_index=$(( next_index + 1 ))
+      next_index=$((next_index + 1))
       skip=false
       continue
     fi
+    is_flag=false
+
+    [[ "$arg" =~ ^--.* ]] && is_flag=true
 
     if [[ "$arg" == "--app" ]]; then
       APP=${args[$next_index]}
@@ -81,10 +85,10 @@ main() {
       skip=true
       shift 2
     elif [[ "$arg" =~ ^--.* ]]; then
-      [[ "$cmd_set" == "true" ]] && APP_ARG="$arg" && break
+      [[ "$cmd_set" == "true" ]] && [[ "$is_flag" == "false" ]] && APP_ARG="$arg" && break
       [[ "$arg" == "--trace" ]] && export DOKKU_TRACE=1 && set -x
     else
-      if [[ "$cmd_set" == "true" ]]; then
+      if [[ "$cmd_set" == "true" ]] && [[ "$is_flag" == "false" ]]; then
         APP_ARG="$arg"
         break
       else
@@ -92,44 +96,44 @@ main() {
         cmd_set=true
       fi
     fi
-    next_index=$(( next_index + 1 ))
+    next_index=$((next_index + 1))
   done
 
   DOKKU_REMOTE_HOST="$(fn-dokku-host "$DOKKU_GIT_REMOTE" "$DOKKU_HOST")"
 
   if [[ -z "$APP" ]]; then
-    if [[ -d .git ]] || git rev-parse --git-dir > /dev/null 2>&1; then
+    if [[ -d .git ]] || git rev-parse --git-dir >/dev/null 2>&1; then
       set +e
       APP=$(git remote -v 2>/dev/null | grep -Ei "dokku@$DOKKU_REMOTE_HOST" | head -n 1 | cut -f2 -d'@' | cut -f1 -d' ' | cut -f2 -d':' 2>/dev/null)
       set -e
     else
-      echo "This is not a git repository"
+      echo " !     This is not a git repository" 1>&2
     fi
   fi
 
   case "$CMD" in
     apps:create)
-      if [[ -z "$APP_ARG" ]]; then
+      if [[ -z "$APP" ]] && [[ -z "$APP_ARG" ]]; then
         APP=$(fn-random-name)
         counter=0
-        while ssh -p "$DOKKU_PORT" "dokku@$DOKKU_REMOTE_HOST" apps 2>/dev/null| grep -q "$APP"; do
+        while ssh -p "$DOKKU_PORT" "dokku@$DOKKU_REMOTE_HOST" apps 2>/dev/null | grep -q "$APP"; do
           if [[ $counter -ge 100 ]]; then
-            echo "Error: could not reasonably generate a new app name. try cleaning up some apps..."
+            echo " !     Could not reasonably generate a new app name. Try cleaning up some apps..." 1>&2
             ssh -p "$DOKKU_PORT" "dokku@$DOKKU_REMOTE_HOST" apps
             exit 1
           else
             APP=$(random_name)
-            counter=$((counter+1))
+            counter=$((counter + 1))
           fi
         done
-      else
+      elif [[ -z "$APP" ]]; then
         APP="$APP_ARG"
       fi
       if git remote add "$DOKKU_GIT_REMOTE" "dokku@$DOKKU_REMOTE_HOST:$APP"; then
         echo "-----> Dokku remote added at ${DOKKU_REMOTE_HOST} called ${DOKKU_GIT_REMOTE}"
         echo "-----> Application name is ${APP}"
       else
-        echo "!      Dokku remote not added! Do you already have a dokku remote?"
+        echo " !     Dokku remote not added! Do you already have a dokku remote?" 1>&2
         return
       fi
       ;;
@@ -139,13 +143,18 @@ main() {
   esac
 
   [[ " apps certs help ls nginx shell storage trace version " == *" $CMD "* ]] && unset APP
-  [[ " certs:chain domains:add-global domains:remove-global domains:set-global ps:rebuildall ps:restartall ps:restore " == *" $CMD "* ]] && unset APP
+  [[ " certs:chain domains:add-global domains:remove-global domains:set-global ps:restore " == *" $CMD "* ]] && unset APP
   [[ "$CMD" =~ events*|plugin*|ssh-keys* ]] && unset APP
   [[ -n "$APP_ARG" ]] && [[ "$APP_ARG" == "--global" ]] && unset APP
   [[ -n "$@" ]] && [[ -n "$APP" ]] && app_arg="--app $APP"
   # echo "ssh -o LogLevel=QUIET -p $DOKKU_PORT -t dokku@$DOKKU_REMOTE_HOST -- $app_arg $@"
   # shellcheck disable=SC2068,SC2086
-  ssh -o LogLevel=QUIET -p $DOKKU_PORT -t dokku@$DOKKU_REMOTE_HOST -- $app_arg $@
+  ssh -o LogLevel=QUIET -p $DOKKU_PORT -t dokku@$DOKKU_REMOTE_HOST -- $app_arg $@ || {
+    ssh_exit_code="$?"
+    echo " !     Failed to execute dokku command over ssh: exit code $?" 1>&2
+    echo " !     If there was no output from Dokku, ensure your configured SSH Key can connect to the remote server" 1>&2
+    return $ssh_exit_code
+  }
 }
 
 if [[ "$0" == "dokku" ]] || [[ "$0" == *dokku_client.sh ]] || [[ "$0" == $(which dokku) ]]; then

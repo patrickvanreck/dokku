@@ -1,16 +1,25 @@
 #!/usr/bin/env bash
-set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+set -eo pipefail
+[[ $DOKKU_TRACE ]] && set -x
 source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
-source "$PLUGIN_AVAILABLE_PATH/tags/functions"
 
-tags_deploy_cmd() {
+cmd-tags-deploy() {
   declare desc="deploys an app with a given tagged image via command line"
-  local cmd="tags:deploy"
-  [[ -z $2 ]] && dokku_log_fail "Please specify an app to run the command on"
-  local APP="$2"; local IMAGE_TAG="$3"
+  declare cmd="tags:deploy"
+  [[ "$1" == "$cmd" ]] && shift 1
+  declare APP="$1" IMAGE_TAG="$2"
+
   verify_app_name "$APP"
 
-  release_and_deploy "$APP" "$IMAGE_TAG"
+  local IMAGE="$(get_app_image_name "$APP" "$IMAGE_TAG")"
+  verify_image "$IMAGE" || return 1
+  plugn trigger release-and-deploy "$APP" "$IMAGE_TAG"
+
+  if [[ "$IMAGE_TAG" != "latest" ]]; then
+    local DOKKU_SCHEDULER="$(get_app_scheduler "$APP")"
+    local LATEST_IMAGE="$(get_app_image_name "$APP")"
+    plugn trigger scheduler-tags-create "$DOKKU_SCHEDULER" "$APP" "$IMAGE" "$LATEST_IMAGE"
+  fi
 }
 
-tags_deploy_cmd "$@"
+cmd-tags-deploy "$@"

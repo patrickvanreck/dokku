@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+set -eo pipefail
+[[ $DOKKU_TRACE ]] && set -x
 
-docker_args() {
+trigger-docker-options-docker-args() {
   declare desc="docker args plugin trigger"
-  local trigger="$0"
+  declare trigger="$0"
+  declare APP="$1" IMAGE_SOURCE_TYPE="$2"
   local STDIN=$(cat)
-  local APP="$1"; local IMAGE_SOURCE_TYPE="$2"
 
   case "$0" in
     *docker-args-build)
@@ -30,7 +31,7 @@ docker_args() {
       local line
       read -r line || local DONE=true
 
-      [[ ! -n "$line" ]] && continue
+      [[ -z "$line" ]] && continue
 
       # shellcheck disable=SC1001
       case "$line" in
@@ -41,26 +42,26 @@ docker_args() {
           case "$IMAGE_SOURCE_TYPE" in
             dockerfile)
               case "$line" in
-                --link*|-v*)
+                --link* | -v*)
                   continue
                   ;;
 
                 *)
                   local output="$output $line"
                   ;;
-                esac
+              esac
               ;;
 
             herokuish)
               case "$line" in
-                --file*|--build-args*)
+                --file* | --build-args*)
                   continue
                   ;;
 
                 *)
                   local output="$output $line"
                   ;;
-                esac
+              esac
               ;;
 
             *)
@@ -69,10 +70,10 @@ docker_args() {
           esac
           ;;
       esac
-    done < "$PHASE_FILE_PATH"
+    done <"$PHASE_FILE_PATH"
   fi
 
   echo -n "$STDIN$output"
 }
 
-docker_args "$@"
+trigger-docker-options-docker-args "$@"

@@ -2,30 +2,26 @@
 
 > New as of 0.3.15
 
-While Dokku normally defaults to using [heroku buildpacks](https://devcenter.heroku.com/articles/buildpacks) for deployment, you can also use docker's native `Dockerfile` system to define a container.
+While Dokku normally defaults to using [Heroku buildpacks](https://devcenter.heroku.com/articles/buildpacks) for deployment, you can also use Docker's native `Dockerfile` system to define a container.
 
-> Dockerfile support is considered a **Power User** feature. By using Dockerfile-based deployment, you agree that you will not have the same comfort as that enjoyed by Buildpack users, and Dokku features may work differently. Differences between the two systems will be documented here.
+> Dockerfile support is considered a *power user* feature. By using Dockerfile-based deployment, you agree that you will not have the same comfort as that enjoyed by buildpack users, and Dokku features may work differently. Differences between the two systems will be documented here.
 
-To use a dockerfile for deployment, commit a valid `Dockerfile` to the root of your repository and push the repository to your Dokku installation. If this file is detected, Dokku will default to using it to construct containers **except** in the following two cases:
+To use a Dockerfile for deployment, commit a valid `Dockerfile` to the root of your repository and push the repository to your Dokku installation. If this file is detected, Dokku will default to using it to construct containers *except* in the following two cases:
 
 - The application has a `BUILDPACK_URL` environment variable set via the `dokku config:set` command or in a committed `.env` file. In this case, Dokku will use your specified buildpack.
 - The application has a `.buildpacks` file in the root of the repository. In this case, Dokku will use your specified buildpack(s).
 
-## Exposed ports
+## Switching from buildpack deployments
 
-> Changed as of 0.5.0
+If an application was previously deployed via buildpacks, the following commands should be run before a Dockerfile deploy will succeed:
 
-Dokku will extract all tcp ports exposed using the `EXPOSE` directive (one port per line) and setup nginx to proxy the same port numbers to listen publicly. If you would like to change the exposed port, you should do so within your `Dockerfile` and app.
+```shell
+dokku config:unset --no-restart node-js-app DOKKU_PROXY_PORT_MAP 
+```
 
-> Note: If ports are specified via `EXPOSE` in your `Dockerfile`, we will proxy requests to the first port specified. Your application must be configured to listen on that port.
+## Build-time configuration variables
 
-If you do not explicitly `EXPOSE` a port in your `Dockerfile`, Dokku will configure the nginx proxy to listen on port 80 (and 443 for TLS) and forward traffic to your app listening on port 5000 inside the container. Just like buildpack apps, you can also use the `$PORT` environment variable in your app to maintain portability.
-
-When ports are exposed through the default nginx proxy, they are proxied externally as HTTP ports. At this time, in no case do we proxy plain TCP or UDP ports. Nginx does not support proxying UDP. UDP ports can be exposed by disabling the nginx proxy with `dokku proxy:disable myapp`. If you would like to investigate alternative proxy methods, please refer to our [proxy management documentation](/docs/advanced-usage/proxy-management.md).
-
-## Build-time Configuration Variables
-
-For security reasons - and as per [docker recommendations](https://github.com/docker/docker/issues/13490) - Dockerfile-based deploys have variables available only during runtime.
+For security reasons - and as per [Docker recommendations](https://github.com/docker/docker/issues/13490) - Dockerfile-based deploys have variables available only during runtime.
 
 For users that require customization in the `build` phase, you may use build arguments via the [docker-options plugin](docs/advanced-usage/docker-options.md):
 
@@ -33,10 +29,16 @@ For users that require customization in the `build` phase, you may use build arg
 dokku docker-options:add node-js-app build '--build-arg NODE_ENV=production'
 ```
 
+The location of the `Dockerfile` may also be specified. If the location is changed, the repository **must also** have a `Dockerfile` in the root directory in order to trigger a dockerfile-based deploy.
+
+```shell
+dokku docker-options:add node-js-app build '--file Dockerfile.dokku'
+```
+
 Once set, the Dockerfile usage would be as follows:
 
 ```Dockerfile
-FROM debian:jessie
+FROM ubuntu:18.04
 
 # set the argument default
 ARG NODE_ENV=production
@@ -48,7 +50,7 @@ RUN echo $NODE_ENV
 You may also set the argument as an environment variable
 
 ```Dockerfile
-FROM debian:jessie
+FROM ubuntu:18.04
 
 # set the argument default
 ARG NODE_ENV=production
@@ -63,10 +65,13 @@ ENV NODE_ENV ${NODE_ENV}
 RUN echo $NODE_ENV
 ```
 
+## Building images with Docker Buildkit
+
+If your Dockerfile is using Docker engine's [buildkit](https://docs.docker.com/develop/develop-images/build_enhancements/) (not to be confused with buildpacks), then the `DOCKER_BUILDKIT=1` environment variable needs to be set. One way to do this is to edit `/etc/environment` on your dokku host and reboot your instance. Note, for complete build log output, you should also set `BUILDKIT_PROGRESS=plain` in the same file. 
 
 ## Customizing the run command
 
-By default no arguments are passed to `docker run` when deploying the container and the `CMD` or `ENTRYPOINT` defined in the `Dockerfile` are executed. You can take advantage of docker ability of overriding the `CMD` or passing parameters to your `ENTRYPOINT` setting `$DOKKU_DOCKERFILE_START_CMD`. Let's say for example you are deploying a base nodejs image, with the following `ENTRYPOINT`:
+By default no arguments are passed to `docker run` when deploying the container and the `CMD` or `ENTRYPOINT` defined in the `Dockerfile` are executed. You can take advantage of docker ability of overriding the `CMD` or passing parameters to your `ENTRYPOINT` setting `$DOKKU_DOCKERFILE_START_CMD`. Let's say for example you are deploying a base Node.js image, with the following `ENTRYPOINT`:
 
 ```Dockerfile
 ENTRYPOINT ["node"]
@@ -78,18 +83,17 @@ You can do:
 dokku config:set node-js-app DOKKU_DOCKERFILE_START_CMD="--harmony server.js"
 ```
 
-To tell docker what to run.
+To tell Docker what to run.
 
-Setting `$DOKKU_DOCKERFILE_CACHE_BUILD` to `true` or `false` will enable or disable docker's image layer cache. Lastly, for more granular build control, you may also pass any `docker build` option to `docker`, by setting `$DOKKU_DOCKER_BUILD_OPTS`.
+Setting `$DOKKU_DOCKERFILE_CACHE_BUILD` to `true` or `false` will enable or disable Docker's image layer cache. Lastly, for more granular build control, you may also pass any `docker build` option to `docker`, by setting `$DOKKU_DOCKER_BUILD_OPTS`.
 
-### Procfiles and Multiple Processes
+### Procfiles and multiple processes
 
 > New as of 0.5.0
 
 You can also customize the run command using a `Procfile`, much like you would on Heroku or
-with a buildpack deployed app. The `Procfile` should contain one or more lines defining [process
-types and associated commands](https://devcenter.heroku.com/articles/procfile#declaring-process-types).
-When you deploy your app a Docker image will be built, the `Procfile` will be extracted from the image
+with a buildpack deployed app. The `Procfile` should contain one or more lines defining [process types and associated commands](https://devcenter.heroku.com/articles/procfile#declaring-process-types).
+When you deploy your app, a Docker image will be built. The `Procfile` will be extracted from the image
 (it must be in the folder defined in your `Dockerfile` as `WORKDIR` or `/app`) and the commands
 in it will be passed to `docker run` to start your process(es). Here's an example `Procfile`:
 
@@ -101,7 +105,7 @@ worker: bin/run-worker.sh
 And `Dockerfile`:
 
 ```Dockerfile
-FROM debian:jessie
+FROM ubuntu:18.04
 WORKDIR /app
 COPY . ./
 CMD ["bin/run-dev.sh"]
@@ -113,3 +117,7 @@ a worker container for this app, you can run `dokku ps:scale worker=1` and a new
 started by running `docker run bin/run-worker.sh` (the actual `docker run` commands are a bit more
 complex, but this is the basic idea). If you use an `ENTRYPOINT` in your `Dockerfile`, the lines
 in your `Procfile` will be passed as arguments to the `ENTRYPOINT` script instead of being executed.
+
+## Exposed ports
+
+See the [port management documentation](/docs/networking/port-management.md) for more information on how Dokku exposes ports for applications and how you can configure these for your app.

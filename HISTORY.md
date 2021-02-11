@@ -1,5 +1,2340 @@
 # History
 
+## 0.23.3
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.23.3/bootstrap.sh
+sudo DOKKU_TAG=v0.23.3 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4397: @josegonzalez Correctly handle environment variables in deployment tasks for Cloud Native Buildpacks
+- #4394: @josegonzalez Swap order of arguments on config-get call
+
+### New Features
+
+- #4395: @josegonzalez Add environment variable support to CNB-based containers
+
+### Refactors
+
+- #4393: @josegonzalez Use docker-image-labeler in cnb builder-build trigger
+
+### Documentation
+
+- #4396: @nerg4l Invalid link to Herokuish Buildpack Deployment in Cloud Native Buildpacks
+
+### Tests
+
+- #4390: @josegonzalez Run tests faster by not cloning the buildpack each time
+
+### Other
+
+- #4389: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 188 to 189 in /tests/apps/php
+
+## 0.23.2
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.23.2/bootstrap.sh
+sudo DOKKU_TAG=v0.23.2 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4388: @josegonzalez Do not inject max-size option when not using local or json-file log-drivers
+- #4386: @josegonzalez Update to docker-image-labeler that handles in-use images
+
+### New Features
+
+- #4387: @josegonzalez Only warn if the vector container is stopped when fetching logs
+- #4372: @josegonzalez Add ability to clear an individual resource
+- #4384: @josegonzalez Add support for injected cron entries from external plugins
+
+### Refactors
+
+- #4373: @josegonzalez Do not attempt to extract Procfile in ps:scale
+
+### Documentation
+
+- #4377: @josegonzalez Add note about the dokku user cron being overwritten by Dokku
+
+### Other
+
+- #3757: @pickettd Add provision line to Windows Vagrant box for dokku-installer
+
+## 0.23.1
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.23.1/bootstrap.sh
+sudo DOKKU_TAG=v0.23.1 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4368: @josegonzalez Always report resources
+
+### New Features
+
+- #4369: @josegonzalez Allow formatting :report command output as json
+
+### Documentation
+
+- #4367: @josegonzalez Update deeplink to digitalocean marketplace image on homepage
+- #4366: @josegonzalez Update Digitalocean docs
+- #4363: @josegonzalez Refer to the monitored slack and github discussions channels in the issue template
+- #4359: @josegonzalez Fix command call for set-property
+- #4358: @Cellane Update header on cron documentation
+- #4357: @Cellane Fix spelling in nginx documentation
+
+### Other
+
+- #4365: @dependabot-preview[bot] chore(deps): bump jinja2 from 2.11.2 to 2.11.3 in /tests/apps/python-flask
+
+## 0.23.0
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.23.0/bootstrap.sh
+sudo DOKKU_TAG=v0.23.0 bash bootstrap.sh
+```
+
+See the [0.23.0 migration guide](/docs/appendices/0.23.0-migration-guide.md) for more information on migrating to 0.23.0.
+
+### Bug Fixes
+
+- #4356: @josegonzalez Do not retag images unnecessarily
+- #4355: @josegonzalez Allow underscores in vector schemes
+- #4350: @josegonzalez Add missing trigger to events plugin
+- #4348: @josegonzalez Correct app-specific shell handling
+- #4333: @josegonzalez Drop tmpdir environment variables when not running as dokku user
+
+### New Features
+
+- #4336: @josegonzalez Add ability to manage stacks on an app or global level …
+- #4354: @josegonzalez Log all triggers called by golang in trace output
+- #4300: @AubreyHewes allow disabling hsts globally and explicitly enable per app
+- #4337: @josegonzalez Add logrotation to container log files
+- #4318: @josegonzalez Add ability to set client max body size via nginx:set
+- #4343: @josegonzalez feat: add initial scheduled task implementation
+- #4297: @josegonzalez Add support for cloning/syncing from a remote repository
+- #4340: @bjornpost Allow configuring x-forwarded-* proxy headers via nginx:set
+
+### Refactors
+
+- #4349: @josegonzalez Remove need for internal dokku calls
+
+### Documentation
+
+- #4347: @fomojola Add post-deploy webhook to list of community plugins
+- #4342: @AubreyHewes Point to current testing docs
+- #4341: @josegonzalez Add testing link to contributing.md
+
+### Tests
+
+- #4352: @josegonzalez Add a test for application renames
+- #4351: @josegonzalez Set hostname for CI runs
+- #4322: @josegonzalez Switch to Github Actions for CI
+
+### Other
+
+- #4353: @josegonzalez Drop unused flag introduced by logs max-size feature
+
+## 0.22.9
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.22.9/bootstrap.sh
+sudo DOKKU_TAG=v0.22.9 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4334: @josegonzalez allow git pushes to apps that already exist but have old names
+- #4335: @josegonzalez Add error checking to plugin:install and plugin:update
+- #4338: @josegonzalez Strip trailing slashes in hostname from web installer
+- #4332: @josegonzalez Correct aws release check in release-plugin script
+- #4311: @nisseknudsen Allow named volume mounts in regex
+- #4320: @josegonzalez Hardcode cnb workdir to /workspace
+
+### New Features
+
+- #4321: @josegonzalez Add git version to output
+
+### Refactors
+
+- #4329: @josegonzalez Standardize apt-get usage
+
+### Documentation
+
+- #4323: @stianlik Fix typo in nginx documentation
+
+### Tests
+
+- #4331: @josegonzalez Switch to upstream bats-core
+- #4330: @josegonzalez Switch to using uuidgen for unique app names
+
+### Other
+
+- #4325: @WaviestBalloon Updated bootstrap.sh to not show when $DOKKU_TAG equals nothing
+- #4324: @dependabot-preview[bot] chore(deps): bump socket.io from 3.0.5 to 3.1.0 in /tests/apps/.websocket.disabled
+- #4319: @josegonzalez Update ruby dependencies in test app
+- #4312: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 187 to 188 in /tests/apps/php
+
+## 0.22.8
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.22.8/bootstrap.sh
+sudo DOKKU_TAG=v0.22.8 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4309: @josegonzalez Correct issue where verifying an app name would bail early
+
+### Documentation
+
+- #4307: @josegonzalez Specify that the dokku logo is for non-commercial use
+
+## 0.22.7
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.22.7/bootstrap.sh
+sudo DOKKU_TAG=v0.22.7 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4301: @josegonzalez Ensure vector container starts correctly
+
+## 0.22.6
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.22.6/bootstrap.sh
+sudo DOKKU_TAG=v0.22.6 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4295: @josegonzalez Update ps subcommands and triggers
+
+### New Features
+
+- #4286: @josegonzalez Add support for templated CHECKS files
+- #4294: @josegonzalez Enhance ssh client logging output
+- #4291: @josegonzalez Add log aggregation support via Vector
+- #4288: @josegonzalez Add the pid of the dokku process to event logs
+- #4289: @josegonzalez Clean precheck tmp file on exit
+
+### Refactors
+
+- #4287: @josegonzalez Refactor parallelized goroutines to use error groups
+
+### Documentation
+
+- #4292: @thomasfedb Update docs to note support for Ubuntu 20.04
+- #4293: @ltalirz Fix path in persistent storage docs
+
+### Other
+
+- #4290: @josegonzalez Add support for debug logging plugin trigger stderr and stdout
+
+## 0.22.5
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.22.5/bootstrap.sh
+sudo DOKKU_TAG=v0.22.5 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4279: @josegonzalez Allow vmware-based vm to work on big sur
+
+### Refactors
+
+- #4282: @josegonzalez Cleanup brew-bump integration
+- #4280: @josegonzalez Parallelize report and scheduler retrieval
+
+### Documentation
+
+- #4285: @josegonzalez Reference official gitlab-ci integration
+- #4284: @josegonzalez Drop old doc link to gitlab ci docs
+- #4283: @josegonzalez Add CI documentation section for Github Actions and Gitlab
+- #4281: @josegonzalez Add forum link to documentation
+
+## 0.22.4
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.22.4/bootstrap.sh
+sudo DOKKU_TAG=v0.22.4 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4274: @josegonzalez Use correct warning message for deprecated code
+
+### New Features
+
+- #4273: @josegonzalez Upgrade to golang 1.15
+
+### Refactors
+
+- #4275: @josegonzalez Add calls to verify app name in subcommands
+
+### Documentation
+
+- #4272: @josegonzalez Correct help output for ssh-keys command
+
+### Tests
+
+- #4276: @josegonzalez Upgrade version of plugn used in tests
+
+## 0.22.3
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.22.3/bootstrap.sh
+sudo DOKKU_TAG=v0.22.3 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4268: @josegonzalez Properly parse flags for logs command
+- #4264: @josegonzalez Correct argument handling when setting the `--app` flag
+- #4252: @magikid Allow symbolic links for certificate and key files
+
+### New Features
+
+- #4270: @josegonzalez Allow renaming old applications to new format
+- #4261: @josegonzalez Add remove by fingerprint and json format output to ssh-keys plugin
+- #4262: @josegonzalez Improve ps:restore logging
+- #4263: @josegonzalez Bump the dokku client formula on release
+
+### Documentation
+
+- #4253: @guettli Highlight the default build method used by Dokku
+- #4250: @rlnd1 Update upgrading.md
+- #4249: @guettli Fix typo in zero downtime docs
+- #4247: @josegonzalez Clarify the domain name setting in the docs
+
+### Tests
+
+- #4269: @josegonzalez Rename duplicate test
+- #4266: @josegonzalez Update junit test files when a bats retry is successful
+- #4265: @josegonzalez Retry failing and skipped tests once
+
+## 0.22.2
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.22.2/bootstrap.sh
+sudo DOKKU_TAG=v0.22.2 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4243: @josegonzalez Do not delete app when the app name is invalid
+
+### New Features
+
+- #4141: @josegonzalez Always initialize git repository
+
+### Other
+
+- #4244: @dependabot-preview[bot] chore(deps): bump monolog/monolog from 1.25.5 to 1.26.0 in /tests/apps/php
+
+## 0.22.1
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.22.1/bootstrap.sh
+sudo DOKKU_TAG=v0.22.1 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4238: @josegonzalez Ensure dead files are created for docker object retirement
+- #4239: @josegonzalez Ensure all byte output is trimmed of whitespace
+- #4228: @Cellane Fix tags:deploy command for images that contain ONBUILD directive
+- #4233: @josegonzalez Properly parse releease command when there is an entrypoint
+- #4215: @josegonzalez Implement missing cleanup routines
+- #4212: @josegonzalez Cleanup docker options during post-delete
+- #4211: @ml-milan-vit Make the dokku-update command compatible with Dokku 0.22+
+
+### New Features
+
+- #4242: @josegonzalez Remove reference to 'whitelist'
+- #4220: @josegonzalez Update plugn from 0.5.0 to 0.5.1
+- #4241: @josegonzalez Properly handle stdout when capturing plugn output
+- #4237: @josegonzalez Release dokku-update 0.2.0
+- #4225: @znz Accept first pushed branch as deploy-branch
+
+### Documentation
+
+- #4236: @josegonzalez Remove note regarding not having an official client
+- #4234: @josegonzalez Switch to bats --filter for running a single test
+- #4222: @leopolicastro Fix typo in deployment tasks documentation
+- #4221: @srr013 Updating readme for clarity on git push step
+- #4214: @josegonzalez Expand backup and restore documentation
+- #4213: @josegonzalez Enhance the 'plugin' plugin documentation
+
+### Tests
+
+- #4218: @josegonzalez Enable compilation cache
+
+### Other
+
+- #4230: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 186 to 187 in /tests/apps/php
+- #4223: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.35.v20201120 to 11.0.0 in /tests/apps/java
+- #4224: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 185 to 186 in /tests/apps/php
+
+## 0.22.0
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.22.0/bootstrap.sh
+sudo DOKKU_TAG=v0.22.0 bash bootstrap.sh
+```
+
+See the [0.22.0 migration guide](/docs/appendices/0.22.0-migration-guide.md) for more information on migrating to 0.22.0.
+
+### Bug Fixes
+
+- #4204: @josegonzalez Ensure the image is not an empty string
+- #4198: @josegonzalez Reference extracted Procfile
+- #4194: @josegonzalez Drop appName check in apps:report
+- #4183: @josegonzalez Embed pb.UnimplementedGreeterServer to avoid linting issues
+- #4182: @josegonzalez Upgrade herokuish to fix nodejs tests
+- #4173: @karimsan Add build-essential to Vagrant provision
+- #4181: @josegonzalez Conditionally mount the dokku-arch folder if it exists
+- #4130: @josegonzalez Clear proxy configs on boot
+- #4131: @josegonzalez Bump minimum docker version
+- #4123: @fomojola Support for expected CHECKS text with special characters
+- #4115: @josegonzalez Add missing labels to built images
+- #4116: @Schlepptop Ensure config:clear an be called
+
+### New Features
+
+- #4209: @josegonzalez Add experimental support for Cloud Native Buildpacks (CNB)
+- #4210: @josegonzalez Add migration guide link to release notes
+- #4203: @josegonzalez Cleanup log output for failure case
+- #4208: @ankane Add ability to change the access log format
+- #4202: @josegonzalez Schedule related images for cleanup when retiring containers
+- #4197: @josegonzalez Retire intermediate containers after use
+- #4128: @fomojola Added the container index to the network-compute-ports trigger
+- #4191: @josegonzalez Create codeql-analysis.yml
+- #4139: @Yihao-G Allow controlling Nginx proxy-buffer-size, proxy-buffering, proxy-buffers, proxy-busy-buffers-size
+- #4156: @ltalirz When `cert:add` remove previous cert before copying the new cert
+- #4129: @josegonzalez Prohibit non-dns names for apps and process types
+- #4125: @josegonzalez Allow customizing the various nginx templates
+- #4121: @josegonzalez Add ability to disable custom ninx.conf.sigil extraction
+
+### Refactors
+
+- #4160: @nerg4l Rewrite logs plugin in Go
+- #4149: @josegonzalez Rewrite ps plugin in golang
+- #4080: @hugopeixoto Stop using VHOST when listing app domains and urls 
+- #4117: @josegonzalez Rewrite app-json plugin in golang
+- #4113: @josegonzalez Drop herokuish release code
+
+### Documentation
+
+- #4196: @josegonzalez Correctly doc apps:report output
+- #4195: @luizpicolo Fix whitespace in process-management docs
+- #4184: @badsyntax Add note regarding using plugin triggers instead of sourcing functions
+- #4188: @fomojola Added the autosync community plugin
+- #4187: @nahtnam Add `-p` flag to "Run on External Volume" tutorial
+- #4186: @badsyntax Add dokku-discourse to community plugins list
+- #4170: @chrisjsimpson Add note on how to enable buildkit usage
+- #4168: @josegonzalez Revert "The default branch for ruby-getting-started is 'main', not 'master"
+- #4167: @nateww The default branch for ruby-getting-started is 'main', not 'master
+- #4135: @znz Fix broken table
+- #4140: @swrobel Note Ubuntu 20.04 support in README
+- #4136: @hugopeixoto Update push command for sample app in docs
+- #4124: @josegonzalez Note that docker options require app rebuilds
+- #4098: @carlosgeos Add a note on how nginx handles load balancing
+- #4111: @josegonzalez Add large version of dokku image
+- #4100: @turicas Fix markdown syntax in nginx docs
+
+### Other
+
+- #4201: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.34.v20201102 to 9.4.35.v20201120 in /tests/apps/java
+- #4200: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 183 to 185 in /tests/apps/php
+- #4189: @dependabot-preview[bot] chore(deps): bump thin from 1.7.2 to 1.8.0 in /tests/apps/ruby
+- #4175: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.33.v20201020 to 9.4.34.v20201102 in /tests/apps/java
+- #4172: @dependabot-preview[bot] chore(deps): bump github.com/golang/protobuf from 1.4.2 to 1.4.3 in /tests/apps/gogrpc
+- #4185: @dependabot-preview[bot] chore(deps): bump socket.io from 2.3.0 to 3.0.1 in /tests/apps/.websocket.disabled
+- #4190: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 182 to 183 in /tests/apps/php
+- #4165: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.31.v20200723 to 9.4.33.v20201020 in /tests/apps/java
+- #4153: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 181 to 182 in /tests/apps/php
+- #4144: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 180 to 181 in /tests/apps/php
+- #4137: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 179 to 180 in /tests/apps/php
+- #4118: @dependabot[bot] chore(deps): bump django from 3.0.2 to 3.0.7 in /tests/apps/dockerfile-release
+- #4103: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 178 to 179 in /tests/apps/php
+- #4091: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.30.v20200611 to 9.4.31.v20200723 in /tests/apps/java
+
+## 0.21.4
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.21.4/bootstrap.sh
+sudo DOKKU_TAG=v0.21.4 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4092: @Yihao-G Fix nginx proxy-read-timeout not set for HTTPS
+- #4095: @GennadySpb Fix application removal during uninstallation
+
+### New Features
+
+- #4097: @josegonzalez Update herokuish
+
+### Documentation
+
+- #4096: @josegonzalez Clarify that special config variables are not exposed to applications
+- #4007: @turicas Clarify nginx.conf.sigil path in image when deploying non-buildpack apps
+- #4078: @gurpreetatwal Add more details to `nginx-dokku-template-source` trigger
+- #4090: @ankane Official plugins no longer in beta
+- #4085: @josegonzalez Set warning on resource type as an actual warning
+
+### Other
+
+- #4082: @dependabot-preview[bot] chore(deps): bump monolog/monolog from 1.25.4 to 1.25.5 in /tests/apps/php
+
+## 0.21.3
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.21.3/bootstrap.sh
+sudo DOKKU_TAG=v0.21.3 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4077: @Schlepptop Fix config_all bug introduced in 0.21.2
+- #4074: @josegonzalez Force set all plugin permissions on plugin:install/update
+
+### Documentation
+
+- #4073: @josegonzalez Document the official shell client
+
+## 0.21.2
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.21.2/bootstrap.sh
+sudo DOKKU_TAG=v0.21.2 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #4072: @Schlepptop Fix deprecation warning in config_all
+
+### New Features
+
+- #4061: @josegonzalez Drop go sum and mod files from releases
+
+### Refactors
+
+- #4064: @hugopeixoto Use *_PATH consistently
+
+### Documentation
+
+- #4069: @josegonzalez Scheduler plugins are no longer beta
+- #4068: @josegonzalez Official plugins are no longer in beta
+- #4066: @ltalirz Add ansible as installation route
+- #4063: @josegonzalez Clarify why we stop/rebuild apps during upgrade
+- #4040: @fonsp Added link to the buildpack plugin docs
+- #4062: @hugopeixoto Rewrite upgrade instructions
+
+## 0.21.1
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.21.1/bootstrap.sh
+sudo DOKKU_TAG=v0.21.1 bash bootstrap.sh
+```
+
+### Documentation
+
+- #4060: @josegonzalez Add warning about the 0.21.0 release
+
+## 0.21.0
+
+> Warning: Release is broken and will be pulled from upstream. Please use a newer version.
+
+### Bug Fixes
+
+- #4058: @hugopeixoto Ensure web installer creates files with correct permissions
+- #4055: @hugopeixoto Delete dokkurc recursively during uninstall
+- #4057: @hugopeixoto Install sudo when installing from source
+- #4045: @josegonzalez Filter gpus instead of nvidia-gpus from resource arguments
+- #4029: @josegonzalez Filter args _after_ docker-args-process-deploy
+- #4026: @josegonzalez Filter resource args from deploy tasks
+- #4022: @josegonzalez Do not allow slashes in app names
+- #4020: @josegonzalez Properly handle multiple containers in ps:inspect
+- #3989: @josegonzalez Correct entering running containers
+- #3977: @josegonzalez Set default port for all run commands
+- #3969: @josegonzalez Do not logrotate all services files
+- #3964: @josegonzalez Remove all --force-yes usage throughout the codebase
+- #3955: @benwh Fix missing 502 error page
+- #3953: @josegonzalez Use correct function name for cmd-tar-in and update migration guide
+
+### New Features
+
+- #4041: @rvanlaar feat: Add download option to the certs plugin
+- #4043: @josegonzalez Allow controlling nginx proxy-read-timeout
+- #4038: @josegonzalez Create proxy:build-config command
+- #4021: @josegonzalez Depend on python3 binary for CentOS 8 support
+- #4004: @josegonzalez Add support for moby-engine
+- #3967: @josegonzalez Add Ubuntu 20.04 support
+- #3988: @josegonzalez Upgrade plugn to 0.5.0
+- #3987: @josegonzalez Upgrade sigil to 0.6.0
+- #3986: @josegonzalez Upgrade sshcommand to 0.11.0
+- #3985: @josegonzalez Upgrade go-procfile-util to 0.8.2
+- #3982: @josegonzalez Allow apps named tls
+- #3979: @josegonzalez Upgrade herokuish
+- #3971: @josegonzalez feat: allow users to customize the source of the dokku.conf nginx template
+- #3966: @josegonzalez Move domain manipulation into triggers
+- #3965: @josegonzalez Drop dokku references in logging output
+- #3954: @josegonzalez feat: upgrade herokuish to 0.5.12
+- #3940: @josegonzalez Expose last updated time in git:report
+- #3939: @josegonzalez Add support for outputting the last visited time
+
+### Refactors
+
+- #4035: @josegonzalez Switch to go mod
+- #4008: @josegonzalez Standardize golang command code
+
+### Documentation
+
+- #4056: @swrobel Remove invalid help entry for dokku ps commmand
+- #4039: @josegonzalez Break out bc-break and refactors in changelog
+- #4025: @alexjj Switch AUR helper to yay
+- #4019: @tdak Added one possible solution to an error
+- #4014: @rvanlaar Update dreamhost cloudinit script
+- #4003: @josegonzalez Add dokku.ai asset
+- #3999: @DavidLemayian Update URL for less than 1gb memory in bootstrap.sh [ci skip]
+- #3998: @josegonzalez Document the #dokku channel on slack
+- #3996: @josegonzalez Clarify network aliases and add section on tld management
+- #3980: @josegonzalez Clarify that the web installer is not supported in docker-based installs
+- #3970: @josegonzalez Clarify the 'see the docs' internal links
+- #3968: @josegonzalez Document access.conf issue
+- #3957: @swrobel Add official registry plugin
+- #3942: @scowalt Fix grammar in environment variables documentation
+
+### Tests
+
+- #4046: @rvanlaar Make `make test` pass on linting
+- #4037: @josegonzalez Try to output oomkill information
+- #4036: @josegonzalez Store the deb and rpm artifacts
+- #4034: @josegonzalez Teardown apps and containers in global teardown
+- #4031: @josegonzalez Delete old apps and ensure the test helper is quieter
+- #4030: @josegonzalez Update circleci workflow
+- #3947: @jayjun Scope init tests to container processes only
+
+### Other
+
+- #4051: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 177 to 178 in /tests/apps/php
+- #4028: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 176 to 177 in /tests/apps/php
+- #4016: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.29.v20200521 to 9.4.30.v20200611 in /tests/apps/java
+- #4006: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 174 to 176 in /tests/apps/php
+- #4001: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.28.v20200408 to 9.4.29.v20200521 in /tests/apps/java
+- #4002: @dependabot-preview[bot] chore(deps): bump monolog/monolog from 1.25.3 to 1.25.4 in /tests/apps/php
+- #3993: @dependabot-preview[bot] chore(deps): bump github.com/golang/protobuf from 1.4.1 to 1.4.2 in /tests/apps/gogrpc
+- #3962: @dependabot-preview[bot] chore(deps): bump github.com/golang/protobuf from 1.4.0 to 1.4.1 in /tests/apps/gogrpc
+- #3959: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 173 to 174 in /tests/apps/php
+- #3950: @dependabot-preview[bot] chore(deps): bump google.golang.org/grpc from 1.29.0 to 1.29.1 in /tests/apps/gogrpc
+- #3946: @dependabot-preview[bot] chore(deps): bump google.golang.org/grpc from 1.28.1 to 1.29.0 in /tests/apps/gogrpc
+
+## 0.20.4
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.20.4/bootstrap.sh
+sudo DOKKU_TAG=v0.20.4 bash bootstrap.sh
+```
+
+### New Features
+
+- #3936: @josegonzalez Enable limiting and reserving gpu resources
+
+### Documentation
+
+- #3937: @josegonzalez Add minor documentation for the kubernetes and nomad schedulers
+
+### Other
+
+- #3935: @dependabot-preview[bot] chore(deps): bump jinja2 from 2.11.1 to 2.11.2 in /tests/apps/python-flask
+- #3934: @dependabot-preview[bot] chore(deps): bump github.com/golang/protobuf from 1.3.5 to 1.4.0 in /tests/apps/gogrpc
+- #3933: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.27.v20200227 to 9.4.28.v20200408 in /tests/apps/java
+
+## 0.20.3
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.20.3/bootstrap.sh
+sudo DOKKU_TAG=v0.20.3 bash bootstrap.sh
+```
+
+### New Features
+
+- #3926: @josegonzalez Add proper support for various buildpack urls
+
+### Other
+
+- #3928: @dependabot-preview[bot] chore(deps): bump google.golang.org/grpc from 1.28.0 to 1.28.1 in /tests/apps/gogrpc
+- #3925: @dependabot-preview[bot] chore(deps): bump flask from 1.1.1 to 1.1.2 in /tests/apps/python-flask
+- #3924: @dependabot-preview[bot] chore(deps): bump flask from 1.1.1 to 1.1.2 in /tests/apps/multi
+
+## 0.20.2
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.20.2/bootstrap.sh
+sudo DOKKU_TAG=v0.20.2 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3921: @josegonzalez Correct container_type handling when entering containers
+- #3919: @josegonzalez Fix bug with restarting containers not being routed to because of changing IP addresses
+
+### New Features
+
+- #3920: @josegonzalez Add the ability to list ssh keys for a specific user
+
+## 0.20.1
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.20.1/bootstrap.sh
+sudo DOKKU_TAG=v0.20.1 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3916: @josegonzalez Change error exit to warning when no apps exist
+
+### New Features
+
+- #3918: @josegonzalez Upgrade herokuish to 0.5.11
+- #3915: @josegonzalez Add ability to check if a plugin has been installed
+- #3914: @josegonzalez Add ability to change or disable the access/error log path
+- #3913: @josegonzalez Upgrade herokuish
+
+### Documentation
+
+- #3907: @josegonzalez Add sponsoring link to issue template
+- #3904: @jazzzz Update dokku-apt entry
+- #3902: @josegonzalez Remove extra commas from network docs
+
+### Other
+
+- #3909: @dependabot-preview[bot] chore(deps): bump werkzeug from 1.0.0 to 1.0.1 in /tests/apps/python-flask
+- #3903: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 172 to 173 in /tests/apps/php
+
+## 0.20.0
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.20.0/bootstrap.sh
+sudo DOKKU_TAG=v0.20.0 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3891: @josegonzalez Add missing cpio dependency
+- #3861: @josegonzalez Fix app clone and rename calls
+- #3682: @josegonzalez Force tty check to run with the default language
+- #3853: @josegonzalez Add missing hooks to events plugin
+
+### New Features
+
+- #3899: @josegonzalez Drop unnecessary quotes on docker inspect calls
+- #3895: @josegonzalez Expose network listeners to nginx templates for all process types
+- #3893: @josegonzalez Rewrite apps plugin in golang
+- #3889: @josegonzalez Update herokuish
+- #3879: @josegonzalez Drop support for unsupported Debian and Ubuntu releases …
+- #3880: @josegonzalez Remove unnecessary source/import statements
+- #3871: @josegonzalez Rewrite proxy plugin in golang
+- #3869: @josegonzalez Standardize plugin trigger calls
+- #3870: @josegonzalez Use Println in favor of Fprintln for os.Stdout
+- #3868: @josegonzalez Remove ps command
+- #3866: @josegonzalez Unify nginx config commands
+- #3865: @josegonzalez Cleanup injected docker labels
+- #3860: @josegonzalez Remove deprecated egrep calls from codebase
+- #3854: @josegonzalez Remove deprecated code
+- #3852: @josegonzalez Standardize plugin code
+- #3850: @josegonzalez DRY up reports in golang
+- #3851: @josegonzalez Update herokuish to 0.5.6
+- #3847: @josegonzalez Custom docker networking
+- #3848: @josegonzalez Minor logging changes
+- #3843: @josegonzalez Enable HSTS by default
+- #3844: @josegonzalez Add global fallback for DOKKU_PROXY_PORT and DOKKU_PROXY_SSL_PORT
+- #3609: @jayjun Start long running containers with --init with tests
+- #3842: @josegonzalez rework docker-args-process trigger arguments
+- #3841: @josegonzalez Implement docker-options:clear
+
+### Documentation
+
+- #3901: @Cellane 📝 Update information about Dokku CLI installation
+- #3892: @josegonzalez Move code of conduct to .github org repository
+- #3888: @decentral1se Mark 9+ for Debian version
+- #3874: @josegonzalez Push users to upgrade to recent versions
+- #3864: @alex-galey Change docs copyright to 2020
+- #3863: @josegonzalez Update issue template to remove ambiguity around reporting
+- #3849: @josegonzalez Reference correct property in network docs example
+- #3840: @ollej Add link to fonts plugin
+- #3838: @ltalirz Expand docs surrounding access control
+
+### Other
+
+- #3897: @dependabot-preview[bot] chore(deps): bump github.com/golang/protobuf from 1.3.4 to 1.3.5 in /tests/apps/gogrpc
+- #3896: @dependabot-preview[bot] chore(deps): bump maven-dependency-plugin from 3.1.1 to 3.1.2 in /tests/apps/java
+- #3894: @dependabot-preview[bot] chore(deps): bump google.golang.org/grpc from 1.27.1 to 1.28.0 in /tests/apps/gogrpc
+- #3885: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 171 to 172 in /tests/apps/php
+- #3884: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.26.v20200117 to 9.4.27.v20200227 in /tests/apps/java
+- #3877: @dependabot-preview[bot] chore(deps): bump github.com/golang/protobuf from 1.3.3 to 1.3.4 in /tests/apps/gogrpc
+- #3858: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 170 to 171 in /tests/apps/php
+- #3855: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 169 to 170 in /tests/apps/php
+- #3846: @dependabot-preview[bot] chore(deps): bump werkzeug from 0.16.1 to 1.0.0 in /tests/apps/python-flask
+- #3845: @dependabot-preview[bot] chore(deps): bump google.golang.org/grpc from 1.27.0 to 1.27.1 in /tests/apps/gogrpc
+- #3833: @dependabot-preview[bot] chore(deps): bump google.golang.org/grpc from 1.26.0 to 1.27.0 in /tests/apps/gogrpc
+- #3837: @dependabot-preview[bot] chore(deps): bump jinja2 from 2.10.3 to 2.11.1 in /tests/apps/python-flask
+- #3836: @dependabot-preview[bot] chore(deps): bump github.com/golang/protobuf from 1.3.2 to 1.3.3 in /tests/apps/gogrpc
+- #3829: @dependabot-preview[bot] chore(deps): bump werkzeug from 0.16.0 to 0.16.1 in /tests/apps/python-flask
+- #3830: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 166 to 169 in /tests/apps/php
+
+## 0.19.13
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.13/bootstrap.sh
+sudo DOKKU_TAG=v0.19.13 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3828: @josegonzalez Reference correct file in nginx:report command
+
+### Other
+
+- #3824: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.25.v20191220 to 9.4.26.v20200117 in /tests/apps/java
+
+## 0.19.12
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.12/bootstrap.sh
+sudo DOKKU_TAG=v0.19.12 bash bootstrap.sh
+```
+
+### New Features
+
+- #3819: @josegonzalez Allow binding nginx to specific IPv4/IPv6 interfaces
+- #3818: @josegonzalez Add support for host-mode networking
+
+### Documentation
+
+- #3814: @treyssatvincent Use dokku:report to for listing domains
+- #3809: @josegonzalez Document nginx:show-conf
+- #3650: @vincelwt Clarify resource management for docker-local scheduler
+- #3806: @kimar Make default vhost example listen to ipv6
+
+### Other
+
+- #3816: @dependabot-preview[bot] chore(deps): bump handlebars from 4.6.0 to 4.7.1 in /tests/apps/.websocket.disabled
+- #3815: @dependabot-preview[bot] chore(deps): bump handlebars from 4.5.3 to 4.6.0 in /tests/apps/.websocket.disabled
+- #3811: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 165 to 166 in /tests/apps/php
+- #3812: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.24.v20191120 to 9.4.25.v20191220 in /tests/apps/java
+- #3810: @dependabot-preview[bot] chore(deps): bump monolog/monolog from 1.25.2 to 1.25.3 in /tests/apps/php
+- #3808: @dependabot-preview[bot] chore(deps): [security] bump rack from 1.6.11 to 1.6.12 in /tests/apps/ruby
+- #3807: @dependabot-preview[bot] chore(deps): bump google.golang.org/grpc from 1.25.1 to 1.26.0 in /tests/apps/gogrpc
+- #3804: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 164 to 165 in /tests/apps/php
+
+## 0.19.11
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.11/bootstrap.sh
+sudo DOKKU_TAG=v0.19.11 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3800: @josegonzalez Properly track failed check count
+
+### New Features
+
+- #3801: @josegonzalez Update herokuish
+
+### Documentation
+
+- #3798: @znz Fix function descriptions in property-functions file
+
+## 0.19.10
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.10/bootstrap.sh
+sudo DOKKU_TAG=v0.19.10 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3784: @josegonzalez Ensure checks attempts are tracked per-check instead of globally
+
+### New Features
+
+- #3793: @josegonzalez Omit DWARF symbol table and debug information from go binaries
+- #3792: @josegonzalez Unify property function implementations
+
+### Documentation
+
+- #3712: @fruitl00p Added new plugin
+
+### Other
+
+- #3790: @dependabot-preview[bot] chore(deps): bump gunicorn from 20.0.3 to 20.0.4 in /tests/apps/python-flask
+- #3791: @dependabot-preview[bot] chore(deps): bump gunicorn from 20.0.3 to 20.0.4 in /tests/apps/multi
+- #3787: @dependabot-preview[bot] chore(deps): bump gunicorn from 20.0.2 to 20.0.3 in /tests/apps/multi
+- #3788: @dependabot-preview[bot] chore(deps): bump gunicorn from 20.0.2 to 20.0.3 in /tests/apps/python-flask
+- #3785: @dependabot-preview[bot] chore(deps): bump gunicorn from 20.0.0 to 20.0.2 in /tests/apps/python-flask
+- #3786: @dependabot-preview[bot] chore(deps): bump gunicorn from 20.0.0 to 20.0.2 in /tests/apps/multi
+- #3748: @dependabot-preview[bot] chore(deps): [security] bump express from 2.5.11 to 4.17.1 in /tests/apps/dockerfile-dokku-scale
+- #3749: @dependabot-preview[bot] chore(deps): [security] bump express from 2.5.11 to 4.17.1 in /tests/apps/nodejs-express-noappjson
+- #3747: @dependabot-preview[bot] chore(deps): [security] bump express from 2.5.11 to 4.17.1 in /tests/apps/config
+- #3746: @dependabot-preview[bot] chore(deps): [security] bump express from 2.5.11 to 4.17.1 in /tests/apps/dockerfile-procfile
+- #3741: @dependabot-preview[bot] chore(deps): [security] bump express from 2.5.11 to 4.17.1 in /tests/apps/nodejs-express
+- #3783: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.23.v20191118 to 9.4.24.v20191120 in /tests/apps/java
+- #3777: @dependabot-preview[bot] chore(deps): [security] bump symfony/http-kernel from 3.4.32 to 3.4.35 in /tests/apps/php
+- #3774: @dependabot-preview[bot] chore(deps): bump gunicorn from 19.9.0 to 20.0.0 in /tests/apps/python-flask
+- #3779: @dependabot-preview[bot] chore(deps): bump monolog/monolog from 1.25.1 to 1.25.2 in /tests/apps/php
+- #3782: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.22.v20191022 to 9.4.23.v20191118 in /tests/apps/java
+
+## 0.19.9
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.9/bootstrap.sh
+sudo DOKKU_TAG=v0.19.9 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3781: @michaelshobbs Respect DOKKU_APP_USER in is_image_herokuish_based
+
+### Other
+
+- #3773: @dependabot-preview[bot] chore(deps): bump google.golang.org/grpc from 1.25.0 to 1.25.1 in /tests/apps/gogrpc
+- #3772: @dependabot-preview[bot] chore(deps): bump gunicorn from 19.9.0 to 20.0.0 in /tests/apps/multi
+- #3778: @dependabot-preview[bot] chore(deps): [security] bump symfony/http-foundation from 3.4.32 to 3.4.35 in /tests/apps/php
+- #3768: @dependabot-preview[bot] chore(deps): bump google.golang.org/grpc from 1.24.0 to 1.25.0 in /tests/apps/gogrpc
+
+## 0.19.8
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.8/bootstrap.sh
+sudo DOKKU_TAG=v0.19.8 bash bootstrap.sh
+```
+
+## 0.19.7
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.7/bootstrap.sh
+sudo DOKKU_TAG=v0.19.7 bash bootstrap.sh
+```
+
+### Documentation
+
+- #3765: @znz Fix typo in desc of is_tls13_available
+
+### Other
+
+- #3739: @safeforge dokku run do not supports interactive mode.
+- #3762: @dependabot-preview[bot] chore(deps): bump handlebars from 4.4.5 to 4.5.1 in /tests/apps/.websocket.disabled
+
+## 0.19.6
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.6/bootstrap.sh
+sudo DOKKU_TAG=v0.19.6 bash bootstrap.sh
+```
+
+### Other
+
+- #3761: @pithyless Fix type-errors in dokku-installer.py
+- #3759: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 163 to 164 in /tests/apps/php
+- #3758: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 9.4.21.v20190926 to 9.4.22.v20191022 in /tests/apps/java
+
+## 0.19.5
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.5/bootstrap.sh
+sudo DOKKU_TAG=v0.19.5 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3756: @jayjun Redirect missing key_file warning to stderr
+
+## 0.19.4
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.4/bootstrap.sh
+sudo DOKKU_TAG=v0.19.4 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3755: @dean1012 Warn if key_file is missing on install but do not exit
+
+## 0.19.3
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.3/bootstrap.sh
+sudo DOKKU_TAG=v0.19.3 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3753: @josegonzalez Always use python3 for the installer
+
+### Other
+
+- #3743: @dependabot-preview[bot] chore(deps): [security] bump express from 3.1.2 to 4.17.1 in /tests/apps/.websocket.disabled
+- #3744: @dependabot-preview[bot] chore(deps): [security] bump handlebars from 1.0.12 to 4.4.5 in /tests/apps/.websocket.disabled
+- #3750: @dependabot-preview[bot] chore(deps): [security] bump express from 2.5.11 to 4.17.1 in /tests/apps/dockerfile-procfile-bad
+- #3745: @dependabot-preview[bot] chore(deps): [security] bump express from 3.3.8 to 4.17.1 in /tests/apps/gitsubmodules
+- #3742: @dependabot-preview[bot] chore(deps): [security] bump express from 2.5.11 to 4.17.1 in /tests/apps/nodejs-express-noprocfile
+- #3729: @dependabot-preview[bot] chore(deps): bump monolog/monolog from 1.12.0 to 1.25.1 in /tests/apps/php
+- #3732: @dependabot-preview[bot] chore(deps): bump silex/silex from 1.2.3 to 2.2.4 in /tests/apps/php
+- #3728: @dependabot-preview[bot] chore(deps): bump jetty-servlet from 7.6.0.v20120127 to 9.4.21.v20190926 in /tests/apps/java
+- #3730: @dependabot-preview[bot] chore(deps): bump werkzeug from 0.15.6 to 0.16.0 in /tests/apps/python-flask
+- #3737: @dependabot-preview[bot] chore(deps): bump express3-handlebars from 0.2.3 to 0.5.2 in /tests/apps/.websocket.disabled
+- #3734: @dependabot-preview[bot] chore(deps-dev): bump heroku/heroku-buildpack-php from 59 to 163 in /tests/apps/php
+- #3735: @dependabot-preview[bot] chore(deps): [security] bump symfony/http-kernel from 2.6.4 to 2.8.51 in /tests/apps/php
+- #3723: @dependabot-preview[bot] chore(deps): bump sass-globbing from 1.1.1 to 1.1.5 in /tests/apps/multi
+- #3731: @dependabot-preview[bot] chore(deps): bump jinja2 from 2.10.1 to 2.10.3 in /tests/apps/python-flask
+- #3736: @dependabot-preview[bot] chore(deps): bump socket.io from 0.9.19 to 2.3.0 in /tests/apps/.websocket.disabled
+- #3726: @dependabot-preview[bot] chore(deps): bump google.golang.org/grpc from 1.23.0 to 1.24.0 in /tests/apps/gogrpc
+- #3727: @dependabot-preview[bot] chore(deps): bump maven-dependency-plugin from 2.4 to 3.1.1 in /tests/apps/java
+- #3733: @dependabot-preview[bot] chore(deps): [security] bump symfony/http-foundation from 2.6.4 to 2.8.50 in /tests/apps/php
+- #3720: @dependabot-preview[bot] chore(deps): bump compass from 1.0.1 to 1.0.3 in /tests/apps/multi
+- #3721: @dependabot-preview[bot] chore(deps): bump sinatra from 1.4.4 to 1.4.8 in /tests/apps/ruby
+- #3719: @dependabot-preview[bot] chore(deps): bump thin from 1.6.1 to 1.7.2 in /tests/apps/ruby
+
+## 0.19.2
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.2/bootstrap.sh
+sudo DOKKU_TAG=v0.19.2 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3718: @josegonzalez Detect correct python binary to use
+
+## 0.19.1
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.1/bootstrap.sh
+sudo DOKKU_TAG=v0.19.1 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3713: @josegonzalez Require nginx 1.13+ in order to enable tls1.3 
+
+## 0.19.0
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.19.0/bootstrap.sh
+sudo DOKKU_TAG=v0.19.0 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3688: @josegonzalez Correct shfmt issues
+- #3684: @josegonzalez Do not push betafish releases to docker hub
+- #3681: @josegonzalez Proper openresty support
+
+### New Features
+
+- #3687: @josegonzalez Add scheduler-post-run trigger
+- #3702: @josegonzalez Cleanup build and destroy logging output
+- #3693: @josegonzalez Remove ssh-keys user-auth trigger in favor of direct check in dokku binary
+- #3691: @josegonzalez Silence trigger logging
+- #3685: @josegonzalez Allow passing labels to one-off dokku containers
+- #3680: @josegonzalez Follow updated intermediate recommendations from the Mozilla SSL Config Generator
+- #3677: @josegonzalez Improve package build process
+- #3679: @josegonzalez Allow keeping the git directory during builds
+- #3577: @josegonzalez Use new-style docker management commands
+- #3678: @josegonzalez Add container-type to run and deploy containers
+- #3671: @josegonzalez Allow overriding checks doc url
+- #3662: @leshik Improve nginx ciphers compatibility
+- #3668: @josegonzalez Release latest docker image on release
+- #3659: @fzerorubigd Add support for grpc/grpcs port forwarding
+- #3690: @josegonzalez Add support for python3
+
+### Documentation
+
+- #3701: @limenet Docs / Getting Started: use HTTPS instead of SSH for clone
+- #3699: @robhudson Add `dokku cleanup` to help output
+- #3669: @josegonzalez Fix reference to CHECKS file location
+
+### Tests
+
+- #3670: @josegonzalez Upgrade all python test deps
+
+## 0.18.5
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.18.5/bootstrap.sh
+sudo DOKKU_TAG=v0.18.5 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3704: @josegonzalez Fail nginx:build-config if the image does not exist
+
+## 0.18.4
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.18.4/bootstrap.sh
+sudo DOKKU_TAG=v0.18.4 bash bootstrap.sh
+```
+
+### Other
+
+- #3703: @scjody Update DOKKU_SCALE from Procfile during ps:scale
+
+## 0.18.3
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.18.3/bootstrap.sh
+sudo DOKKU_TAG=v0.18.3 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3660: @josegonzalez Trigger builder-release for dockerfile correctly
+- #3655: @znz Fix filename of sshcommand tarball
+- #3648: @josegonzalez Copy the deb file before creating the image
+
+### New Features
+
+- #3656: @josegonzalez Allow users to customize the container start command
+- #3657: @josegonzalez Show error message when docker-related build commands fail
+- #3654: @josegonzalez Update herokuish to 0.5.3
+
+### Documentation
+
+- #3652: @josegonzalez Correct issue in inspect call for issue template
+
+## 0.18.2
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.18.2/bootstrap.sh
+sudo DOKKU_TAG=v0.18.2 bash bootstrap.sh
+```
+
+### New Features
+
+- #3645: @josegonzalez Use version in DOKKU_LIB_ROOT
+- #3644: @josegonzalez Refactor temp file handling
+- #3643: @josegonzalez Quiet deploy output
+- #3641: @josegonzalez Pass SOURCECODE_WORK_DIR to build-buildpack triggers
+- #3639: @josegonzalez Refer to upstream sshcommand package
+
+### Documentation
+
+- #3642: @josegonzalez Correct issue with label change in docs
+- #3640: @josegonzalez Add missing popd to post-extract example
+
+## 0.18.1
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.18.1/bootstrap.sh
+sudo DOKKU_TAG=v0.18.1 bash bootstrap.sh
+```
+
+### New Features
+
+- #3636: @josegonzalez Unify deb and rpm creation code
+- #3635: @josegonzalez Upgrade herokuish to 0.5.2
+
+## 0.18.0
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.18.0/bootstrap.sh
+sudo DOKKU_TAG=v0.18.0 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3627: @josegonzalez Make image removal synchronous
+- #3618: @josegonzalez Ensure the dokku-retire timer is properly installed
+- #3614: @alexquick Validate args for config:set and config:unset
+- #3605: @josegonzalez Handle case where there are empty newlines in the authorized_keys file
+- #3603: @josegonzalez Drop extra % sign in common.LogVerboseQuiet
+- #3597: @josegonzalez Allow default trace function to work
+
+### New Features
+
+- #3628: @josegonzalez Handle file copying in a secure and reliable fashion
+- #3630: @josegonzalez Fix issue where push warning on bad branch was skipped
+- #3629: @josegonzalez Avoid calling the user-auth trigger where possible
+- #3626: @josegonzalez Builder plugins
+- #3599: @josegonzalez Scope docker-cleanup to specific app
+- #3589: @michaelshobbs Allow running Dokku in Docker
+- #3607: @josegonzalez Purge cache using herokuish image
+- #3602: @alexymik Create a 502 error page to automatically refresh if backend status changes
+- #3600: @josegonzalez Refactor IsImageHerokuishBased to match shell version
+
+### Documentation
+
+- #3625: @josegonzalez Remove old reference to SPONSORS.md
+- #3619: @josegonzalez Cleanup plugin creation docs
+- #3612: @jayjun Improve testing docs
+- #3613: @Lyelt Remove all uses of proxy_set_header Connection "upgrade"
+- #3596: @josegonzalez Add missing hooks to events plugin and plugin triggers docs
+
+### Tests
+
+- #3610: @jayjun Correct Bats path in single tests
+
+## 0.17.9
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.17.9/bootstrap.sh
+sudo DOKKU_TAG=v0.17.9 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3593: @JakeAngell Fix nginx template for https in "Connection" header
+
+### Documentation
+
+- #3595: @josegonzalez Drop extra help output for trace
+
+## 0.17.8
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.17.8/bootstrap.sh
+sudo DOKKU_TAG=v0.17.8 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3591: @palfrey Allow SSH keys with no ending newline
+
+### New Features
+
+- #3587: @josegonzalez feat: drop make and gcc as dependencies
+
+## 0.17.7
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.17.7/bootstrap.sh
+sudo DOKKU_TAG=v0.17.7 bash bootstrap.sh
+```
+
+### New Features
+
+- #3586: @josegonzalez ps plugin parallel usage cleanup
+
+### Documentation
+
+- #3584: @josegonzalez Fix no-install-recommends documentation
+
+### Other
+
+- #3579: @znz Update plugin list
+
+## 0.17.6
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.17.6/bootstrap.sh
+sudo DOKKU_TAG=v0.17.6 bash bootstrap.sh
+```
+
+### New Features
+
+- #3578: @josegonzalez Allow omitting resource args by setting DOKKU_OMIT_RESOURCE_ARGS
+
+## 0.17.5
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.17.5/bootstrap.sh
+sudo DOKKU_TAG=v0.17.5 bash bootstrap.sh
+```
+
+### New Features
+
+- #3576: @josegonzalez Allow setting DOCKER_BIN path for docker execution
+
+## 0.17.4
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.17.4/bootstrap.sh
+sudo DOKKU_TAG=v0.17.4 bash bootstrap.sh
+```
+
+### New Features
+
+- #3575: @josegonzalez Add a way to cleanup apps for specific schedulers
+
+## 0.17.3
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.17.3/bootstrap.sh
+sudo DOKKU_TAG=v0.17.3 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3570: @znz Fix typos in trace help
+
+### New Features
+
+- #3574: @josegonzalez Add support for pulling app status from scheduler plugins
+- #3571: @znz Simplify hostname_regex
+
+## 0.17.2
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.17.2/bootstrap.sh
+sudo DOKKU_TAG=v0.17.2 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3568: @josegonzalez Correct issue with clearing global domains
+
+## 0.17.1
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.17.1/bootstrap.sh
+sudo DOKKU_TAG=v0.17.1 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3567: @josegonzalez Ignore SC2064
+
+## 0.17.0
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.17.0/bootstrap.sh
+sudo DOKKU_TAG=v0.17.0 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3565: @josegonzalez Properly cleanup temp files
+- #3563: @josegonzalez Properly split strings in sanitized ps:inspect
+- #3560: @josegonzalez Resource setting fixes
+- #3556: @josegonzalez Add missing domains:clear-global command
+- #3554: @znz Switch from rawgit to jsdelivr in manifest.json too
+
+### New Features
+
+- #3566: @josegonzalez Allow users to specify wildcard domains
+- #3564: @josegonzalez Add config:clear command
+- #3477: @alexquick Allow specifying environment variables for dokku run
+- #3540: @josegonzalez Do not append the global domain for matching subdomains
+- #3559: @josegonzalez Add trace:on and trace:off
+- #3561: @josegonzalez feat: disable scaling if app contains DOKKU_SCALE file
+- #3558: @josegonzalez Add nginx:show-conf command
+- #3549: @josegonzalez Add message indicating that the user is looking at default limits/reservations
+
+### Documentation
+
+- #3557: @josegonzalez Standardize on node-js-app in examples
+- #3548: @josegonzalez Remove outdated global resource setting
+
+### Other
+
+- #3562: @josegonzalez Proxy ports manipulation updates
+
+## 0.16.4
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.16.4/bootstrap.sh
+sudo DOKKU_TAG=v0.16.4 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3547: @josegonzalez Correct retrieval of resource values for alternative schedulers
+
+### New Features
+
+- #3546: @josegonzalez Add ability to trigger an arbitrary plugin hook
+
+## 0.16.3
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.16.3/bootstrap.sh
+sudo DOKKU_TAG=v0.16.3 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3541: @josegonzalez Handle case where image is null on first deploy
+
+### New Features
+
+- #3543: @josegonzalez Add ability to clear global domains
+- #3517: @josegonzalez SSH key updates
+- #3538: @josegonzalez Silence dokku run 'errors'
+
+### Documentation
+
+- #3523: @MarcDiethelm Add an example how to specify a Dockerfile for deployment
+- #3539: @josegonzalez Warn users when ufw is enabled
+
+## 0.16.2
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.16.2/bootstrap.sh
+sudo DOKKU_TAG=v0.16.2 bash bootstrap.sh
+```
+
+### Documentation
+
+- #3536: @josegonzalez docs: Add documentation for nginx-pre-reload limitation
+- #3535: @josegonzalez Add help output for apps:exists
+
+## 0.16.1
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.16.1/bootstrap.sh
+sudo DOKKU_TAG=v0.16.1 bash bootstrap.sh
+```
+
+### New Features
+
+- #3532: @josegonzalez refactor: allow the scheduler to decide if an app is deployed
+
+### Documentation
+
+- #3530: @jhstatewide Updated info about supported Ubuntu versions
+
+## 0.16.0
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.16.0/bootstrap.sh
+sudo DOKKU_TAG=v0.16.0 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3527: @josegonzalez Use DOKKU_IMAGE for report command
+
+### New Features
+
+- #3528: @josegonzalez feat: add support for quiet ps:scale output
+- #3516: @ape-box fix nginx template with Connection header to http_connection
+- #3513: @Mayeu Support installing plugins via file:// scheme
+
+### Documentation
+
+- #3525: @artofrawr add multi dockerfile plugin to plugins.md
+- #3518: @renestalder Add GitLab GIT_STRATEGY for stop_preview_app
+- #3506: @vanastassiou Clarify application deployment documentation
+- #3512: @Mayeu Update example app in deploy tutorial
+
+## 0.15.5
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.15.5/bootstrap.sh
+sudo DOKKU_TAG=v0.15.5 bash bootstrap.sh
+```
+
+### New Features
+
+- #3511: @josegonzalez Add json output to config:export
+
+### Documentation
+
+- #3510: @josegonzalez Remove SPONSORS doc in favor of OpenCollective
+- #3509: @Neamar Missing space in markdown formatting
+- #3507: @renestalder Fix GitLab CI examples
+
+## 0.15.4
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.15.4/bootstrap.sh
+sudo DOKKU_TAG=v0.15.4 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3499: @josegonzalez Ensure the .buildpacks file exists before writing to it
+- #3500: @josegonzalez Always allow ps:scale proc=0
+- #3497: @josegonzalez Allow reporting domains when there are none specified
+
+### New Features
+
+- #3502: @josegonzalez Add a trigger to fetch the git revision
+- #3501: @josegonzalez Move log retrieval to docker-local scheduler
+- #3498: @josegonzalez Add ability to report domains globally
+- #3496: @josegonzalez Cleanup glide plugins when running src-clean
+
+### Documentation
+
+- #3504: @vanastassiou Edits for readability and conciseness
+- #3490: @josegonzalez Add missing link to resource management docs
+
+## 0.15.3
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.15.3/bootstrap.sh
+sudo DOKKU_TAG=v0.15.3 bash bootstrap.sh
+```
+
+### New Features
+
+- #3489: @josegonzalez feat: upgrade herokuish to 0.5.0 (Ubuntu 18.04)
+
+## 0.15.2
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.15.2/bootstrap.sh
+sudo DOKKU_TAG=v0.15.2 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3488: @josegonzalez fix: call ps:retire from system service
+
+## 0.15.1
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.15.1/bootstrap.sh
+sudo DOKKU_TAG=v0.15.1 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3485: @josegonzalez fix: ensure 'dokku report' always succeeds for any app
+
+## 0.15.0
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.15.0/bootstrap.sh
+sudo DOKKU_TAG=v0.15.0 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3479: @josegonzalez Turn off logging for nginx validate configuration
+- #3470: @josegonzalez fix: correct the argument for get_release_cmd
+
+### New Features
+
+- #3469: @josegonzalez Resource management
+- #3466: @josegonzalez Quieter builds
+- #3467: @josegonzalez feat: update golang in use for binary building
+- #3465: @josegonzalez Vagrant VM Enhancements
+- #3464: @josegonzalez Upgrade to go-procfile-util version 0.6.0
+- #3463: @josegonzalez Implement version flags
+- #3462: @josegonzalez Upgrade procfile-util
+- #3449: @josegonzalez Only override the `WORKDIR` in copy_from_image if the image is `gliderlabs/herokuish` based
+- #3461: @josegonzalez Allow skipping aws releases for plugins
+- #3459: @josegonzalez Upgrade to herokuish:0.4.9
+- #3413: @josegonzalez Implement buildpacks plugin
+
+### Documentation
+
+- #3482: @multikatt rails-database -> railsdatabase
+- #3476: @lazyatom Add chrome plugin to documentation
+- #3468: @josegonzalez Doc cleanup
+
+### Other
+
+- #3471: @josegonzalez chore: drop plugn package building
+
+## 0.14.6
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.14.6/bootstrap.sh
+sudo DOKKU_TAG=v0.14.6 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3448: @josegonzalez Remove https port mappings from new app during clone
+- #3434: @tamanobi Ignore cache directories when clone
+
+### New Features
+
+- #3447: @josegonzalez Update herokuish to 0.4.8
+
+### Documentation
+
+- #3420: @baikunz Add reference to external post-deploy-script plugin
+- #3453: @jayjun Fix Deployment guides style
+- #3445: @zuccs Fix typo in deployment tasks documentation
+- #3441: @josegonzalez Update issue template information
+- #3436: @jayjun Fix Getting Started guides style
+- #3425: @jayjun Add warning about PORT variable in deploy tutorial
+
+### Tests
+
+- #3435: @josegonzalez Fix lint issues across codebase
+
+## 0.14.5
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.14.5/bootstrap.sh
+sudo DOKKU_TAG=v0.14.5 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3419: @jayjun Fix Dokku installer checkbox for WebKit and Edge browsers
+
+## 0.14.4
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.14.4/bootstrap.sh
+sudo DOKKU_TAG=v0.14.4 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3415: @josegonzalez Drop universe installation in debian
+
+## 0.14.3
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.14.3/bootstrap.sh
+sudo DOKKU_TAG=v0.14.3 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3412: @josegonzalez Ensure official golang plugins have correct help output
+- #3411: @josegonzalez Properly handle the nginx installation dependency
+- #3406: @josegonzalez Add missing semicolons to app-json script
+- #3394: @josegonzalez Quiet ps:retire where possible
+
+### New Features
+
+- #3410: @josegonzalez Make installs quieter
+- #3409: @josegonzalez Build golang binaries with higher concurrency
+- #3408: @josegonzalez Disable container restarts for stopped containers
+- #3389: @heyarne Remove jQuery from web-based installer
+
+### Documentation
+
+- #3407: @tkrugg Fix typo on domain docs
+
+### Tests
+
+- #3414: @josegonzalez Test and release changes
+
+## 0.14.2
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.14.2/bootstrap.sh
+sudo DOKKU_TAG=v0.14.2 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3395: @josegonzalez Correct early exit 1 in apps:report
+
+### Documentation
+
+- #3393: @jayjun Fix capitalization and formatting in installation guides
+- #3392: @jayjun Fix wrong PostgreSQL environment variable in guide
+- #3391: @josegonzalez Update all gpgkey paths to the new url
+
+## 0.14.1
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.14.1/bootstrap.sh
+sudo DOKKU_TAG=v0.14.1 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3386: @josegonzalez Ensure we can deploy code when there is no pre or post-deploy script defined
+
+## 0.14.0
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.14.0/bootstrap.sh
+sudo DOKKU_TAG=v0.14.0 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3384: @josegonzalez fix: use updated gpg key for apt repository
+- #3382: @josegonzalez Set cleanup to global when no application is specified
+- #3350: @josegonzalez Do not build the proxy config when there are no app listeners
+- #3366: @josegonzalez Add post-app-clone-setup to network clean make target
+- #3349: @josegonzalez Ensure apps are cleanly cloned
+- #3356: @josegonzalez Move storage directory into DOKKU_LIB_ROOT
+- #3341: @baikunz Select only default dokku network IP
+- #3348: @josegonzalez Use correct name for packagecloud token when running CI commands
+- #3339: @josegonzalez Properly check args when calling cleanup globally
+- #3344: @josegonzalez Allow running dokku report without needing an interactive shell
+
+### New Features
+
+- #3381: @josegonzalez Add support for the Procfile release command
+- #3380: @josegonzalez Install stable docker when using bootstrap script
+- #3378: @josegonzalez Make admin setup UI look nicer
+- #3369: @josegonzalez Pull invalid nginx configuration when the nginx configs fail to validate
+- #3371: @josegonzalez Add tests section to changelog
+- #3358: @josegonzalez Image tag deploy workflow cleanup
+- #3351: @josegonzalez Do not clone URLS and VHOST files to new apps
+- #3357: @josegonzalez Add support for building arbitrary releases
+- #3354: @josegonzalez Drop default dhparam key size to 2048
+- #3347: @josegonzalez Upgrade herokuish
+- #3352: @josegonzalez Increase security of default SSL setup
+- #3353: @josegonzalez Normalize tests
+- #3345: @josegonzalez Allow triggering the full report for all apps via --all flag
+- #3346: @josegonzalez Always overwrite the dokku.conf file for nginx
+
+### Documentation
+
+- #3377: @josegonzalez Remove team member section on homepage in favor of sponsor section
+- #3376: @josegonzalez Switch from rawgit to jsdelivr
+- #3365: @josegonzalez Remove extra tags:create call from docs
+
+### Tests
+
+- #3379: @josegonzalez Run mvdan/shfmt on test runs
+- #3370: @josegonzalez Add junit support to shellcheck output
+- #3308: @josegonzalez Add timing info to test runs on CircleCI
+- #3367: @josegonzalez Run tests from built artifact
+- #3368: @josegonzalez Balance circleci tests
+- #3363: @josegonzalez Add a wrapper for invoking a single test
+- #3362: @josegonzalez Allow tests to be run from any directory
+- #3360: @josegonzalez Switch to bats-core
+- #3361: @josegonzalez Do not generate dhparam for tests
+
+### Other
+
+- #3279: @fruitl00p Make sure the universe repo is loaded into APT
+
+## 0.13.4
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.13.4/bootstrap.sh
+sudo DOKKU_TAG=v0.13.4 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3337: @josegonzalez Use correct container id variable for killing containers
+
+### New Features
+
+- #3338: @josegonzalez Redirect ps:retire output to a log file
+
+## 0.13.3
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.13.3/bootstrap.sh
+sudo DOKKU_TAG=v0.13.3 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3330: @josegonzalez Ensure chowned properties always have a user and group set
+
+### New Features
+
+- #3334: @josegonzalez refactor: run every 5 minutes instead of 2
+
+## 0.13.2
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.13.2/bootstrap.sh
+sudo DOKKU_TAG=v0.13.2 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3329: @josegonzalez Avoid parsing missing file when retiring containers
+- #3325: @wcalandro Add "--global" to dokku cleanup on dokku update
+
+### Documentation
+
+- #3326: @josegonzalez Add note to release on how to upgrade via the bootstrap script
+
+## 0.13.1
+
+Install/update via the bootstrap script:
+
+```shell
+wget https://raw.githubusercontent.com/dokku/dokku/v0.13.1/bootstrap.sh
+sudo DOKKU_TAG=v0.13.1 bash bootstrap.sh
+```
+
+### Bug Fixes
+
+- #3324: @josegonzalez Add missing source of config functions
+
+## 0.13.0
+
+### Bug Fixes
+
+- #3312: @josegonzalez fix: keep track of failed containers regardless of docker kill output
+- #3299: @josegonzalez Wrap script_bin in double-quotes
+- #3295: @alexquick Sort config:show by key name
+- #3288: @josegonzalez Wrap script binary in single quotes during executable check
+
+### New Features
+
+- #3302: @josegonzalez Add ability to check on app lock status via apps:locked command
+- #3315: @aokon Upgrade herokuish to 0.4.5 version
+- #3236: @josegonzalez Retire old containers
+- #3307: @josegonzalez Add support for docker.io package
+- #3301: @josegonzalez Add ability to sync packages to a new version of ubuntu
+- #3286: @josegonzalez Sanitize docker inspect output with ps:inspect
+- #3240: @josegonzalez Refactor Procfile handling to use go-procfile-util
+- #3282: @josegonzalez Use create instead of run for faster and more reliable file copy from docker images
+- #3280: @josegonzalez Better scheduler support
+- #3259: @josegonzalez Check if script is executable when a full path is specified
+
+### Documentation
+
+- #3314: @royklutman Remove reference to non-existent DigitalOcean hosting plan
+- #3313: @morenoh149 Indicate to user to specify hostname
+- #3310: @josegonzalez Add a note to our issue template begging for money
+- #3281: @josegonzalez Add documentation on custom error pages
+
+## 0.12.13
+
+### New Features
+
+- #3257: @josegonzalez Suppress output in git plugin during builds
+- #3254: @michaelshobbs Update herokuish to 0.4.4
+
+### Documentation
+
+- #3270: @alexymik Correct typo in git documentation
+- #3268: @josegonzalez Correct notice on ubuntu support
+- #3247: @mimischi Fix typo in ps:stopall
+- #3246: @dv Change DISABLE_CHOWN to disable-chown
+
+## 0.12.12
+
+### New Features
+
+- #3244: @josegonzalez Allow disabling chown for persistent storage in scheduler-docker-local
+
+## 0.12.11
+
+### Bug Fixes
+
+- #3238: @josegonzalez Handle proxy issues in app renaming
+- #3234: @mashrikt Unset GIT_QUARANTINE_PATH when updating repo submodule
+- #3223: @josegonzalez Get the global scheduler if no app is specified
+- #3218: @wcalandro Fix error text when using "dokku plugin:uninstall"
+
+### New Features
+
+- #3242: @josegonzalez Upgrade herokuish to 0.4.3
+- #3241: @josegonzalez Add a subcommand for retrieving failed app deploy logs
+- #3237: @josegonzalez Support --quiet header when showing all environment variables
+
+### Documentation
+
+- #3235: @josegonzalez Switch from ps:rebuild to ps:restart
+- #3221: @josegonzalez Better callout for why env vars do not get applied to dockerfile builds
+
+## 0.12.10
+
+### New Features
+
+- #3214: @josegonzalez Add net-tools as a dependency to debian installs
+
+## 0.12.9
+
+### Bug Fixes
+
+- #3212: @josegonzalez Add missing config source
+
+## 0.12.8
+
+### Bug Fixes
+
+- #3211: @josegonzalez Add missing source of config/functions
+
+### Documentation
+
+- #3204: @znz Add `--no-restart` to `config:unset` of `config:help`
+- #3203: @josegonzalez Clarify issue template
+
+## 0.12.7
+
+### Bug Fixes
+
+- #3200: @josegonzalez fix: correct bash-completion integration
+
+### New Features
+
+- #3199: @josegonzalez Update herokuish to 0.4.2
+- #3198: @josegonzalez Cleanup temporary changes during betafish releases
+
+## 0.12.6
+
+### Bug Fixes
+
+- #3193: @josegonzalez Install bash-completion files correctly
+- #3179: @josegonzalez Ignore issues with popd when OS versions with stricter security
+- #3177: @philm ensure dokku-redeploy runs when docker is stopped then started
+- #3176: @josegonzalez Detect mixed running status on service start
+
+### New Features
+
+- #3195: @josegonzalez Allow lower versions of docker-engine
+- #3181: @malixsys Adding support for `http2_push_preload` to nginx 1.13.9+ configuration
+- #3183: @josegonzalez Unskip initial herokuish test
+- #3175: @josegonzalez Implement bash-completion for commands
+
+### Documentation
+
+- #3197: @josegonzalez Add a tutorial for deploying applications via gitlab ci
+- #3194: @josegonzalez Clarify why dokku report information is useful
+- #3189: @josegonzalez Correct issue with adding a user remotely
+
+## 0.12.5
+
+### Bug Fixes
+
+- #3173: @josegonzalez fix: do not output error message twice
+
+### New Features
+
+- #3172: @josegonzalez feat: Add the ability to ignore existing applications during a git clone
+- #3171: @josegonzalez Allow users to override the reported app url
+- #3170: @josegonzalez Add ps:startall command
+
+### Documentation
+
+- #3159: @zuck Improve docs for default site with HTTPS
+
+## 0.12.4
+
+### Bug Fixes
+
+- #3168: @josegonzalez Use correct variable name when writing deploy-branch value
+
+## 0.12.3
+
+### Bug Fixes
+
+- #3156: @josegonzalez fix: ensure we _always_ include all types in history output
+
+### Documentation
+
+- #3163: @josegonzalez Better apt install formatting
+
+### Other
+
+- #3153: @scjody Allow specifying a separate DOKKU_HOST_ROOT
+
+## 0.12.2
+
+### Bug Fixes
+
+- #3155: @josegonzalez fix: re-add is_container_running
+
+## 0.12.1
+
+### Bug Fixes
+
+- #3151: @josegonzalez fix: include missing config/functions source
+
+## 0.12.0
+
+### Bug Fixes
+
+- #3146: @josegonzalez Fix non ubuntu installs
+- #3138: @josegonzalez Use correct path for /etc/default file
+- #3137: @josegonzalez Ensure we can disable setting the rev-env-var
+- #3131: @axilleas Capitalize log sentence when renaming containers
+- #3128: @Modicrumb Improve windows vagrant experience
+- #3105: @znz Follow renaming from deploy-method to deploy-source
+- #3101: @josegonzalez Handle stopped nginx during debian installation
+
+### New Features
+
+- #3141: @josegonzalez Centralize app existence checks into the apps plugin
+- #3147: @josegonzalez Create proxy:ports-set call
+- #3145: @josegonzalez Add report trigger
+- #3144: @josegonzalez Increase curl max timeout to 600 seconds (10 minutes)
+- #3107: @znz Remove unused password in ssl cert generation
+- #3095: @josegonzalez Migrate env for NGINX_* to PROXY_*
+- #3140: @josegonzalez Add newline to config:get output
+- #3139: @josegonzalez Add ability to initialize a git repository out of band
+- #3111: @josegonzalez Upgrade herokuish to 0.4.0
+- #3110: @josegonzalez Upgrade herokuish to 0.3.36
+- #3106: @znz Remove unnecessary shellcheck disable
+- #3098: @josegonzalez Pull herokuish from docker hub when installing via package
+- #3100: @josegonzalez Properly handle invalid process type entries during DOKKU_SCALE generation
+- #3097: @josegonzalez Update herokuish to 0.3.35
+
+### Documentation
+
+- #3148: @josegonzalez Use consistent terms for domains, apps, and commands
+- #3135: @josegonzalez Revert "Clarify that the checks plugin only matches content start"
+- #3134: @tomdyson Fix typo in upgrading docs
+- #3119: @TomasHubelbauer Link through to the application deployment page after the installation
+- #3118: @Tyilo Clarify that the checks plugin only matches content start
+- #3113: @ilyapoz Fix proxy management link
+- #3112: @josegonzalez Minor doc css fixes
+- #3104: @sarendsen Add dokku-limit to plugins documentation
+- #3108: @znz Update plugin list output
+
+## 0.11.6
+
+### Bug Fixes
+
+- #3091: @josegonzalez Properly trigger tar-based deploys on git-deployed repositories
+- #3076: @Kjwon15 Prune worktree after build
+- #3090: @josegonzalez Ensure all plugin triggers have docs and events integration
+- #3089: @josegonzalez Use a longer password for self-signed certificates
+
+### New Features
+
+- #2950: @adelq Add configuration option to disable automatic app creation
+- #3093: @josegonzalez Add subcommands to allow app locking and unlocking
+- #3092: @josegonzalez Add support for configuring the app shell
+
+### Documentation
+
+- #3096: @josegonzalez docs: Document how to check on a running dokku-installer
+
+## 0.11.5
+
+### Bug Fixes
+
+- #3088: @josegonzalez Silence port retrieval stderr
+- #3086: @josegonzalez Fix help output for golang plugins
+- #3079: @josegonzalez Move container status exclusively to ps plugin
+
+### New Features
+
+- #3085: @josegonzalez Add support for checking if an application exists
+- #3032: @josegonzalez Add support for arbitrary ubuntu versions
+- #3074: @josegonzalez Add the ability to disable ANSI prefixes via DOKKU_DISABLE_ANSI_PREFIX_REMOVAL
+- #3083: @josegonzalez Source /etc/defaults/dokku if available
+
+### Documentation
+
+- #2958: @silverfix Add tutorial for running Dokku on an external volume
+- #3082: @josegonzalez Switch from Gratipay to Patreon
+- #3081: @josegonzalez Add docs for switching between deployment methodologies
+
+## 0.11.4
+
+### Bug Fixes
+
+- #3071: @josegonzalez Do not grab restart policies if the deploy phase cannot be read
+- #3065: @josegonzalez Check if dokkurc files are readable before attempting to source
+- #3066: @josegonzalez Validate that all application names are valid domain names
+- #3052: @alexquick Remove bad config keys on load from app/global envfiles
+
+### New Features
+
+- #3073: @josegonzalez Add support for rhel
+- #3039: @josegonzalez Enhance security-related upgrade process
+- #3038: @shrmnk Add ps:stopall subcommand
+- #3055: @michaelshobbs Update to herokuish v0.3.34
+- #3045: @jcrben Remove nginx configuration files on debian purge
+
+### Documentation
+
+- #3072: @josegonzalez Remove all references to VHOST files from documentation
+- #3069: @josegonzalez Remove potentially bad nginx template examples
+- #3059: @lwm Add note for runtime host configuration for checks.
+- #3041: @jcrben Point to unattended install instructions
+- #3053: @mimischi Add plugin to manage Dockerfile location to documentation
+- #3062: @shannara Change help run command be more explicit
+- #3034: @znz Fix a typo in golang config.go source
+- #3061: @tomdyson Fix plugin-triggers docs typo
+- #3056: @raine Fix typo in config help output
+- #3044: @takuti Fix links to port-management
+- #3042: @josegonzalez Improve documentation around port handling.
+
+## 0.11.3
+
+### Bug Fixes
+
+- #3031: @josegonzalez fix: ensure we respect DOKKU_DEPLOY_BRANCH when rebuilding applications
+
+### New Features
+
+- #3028: @josegonzalez Ensure parallel runs properly for non-restorable apps and moreutils parallel
+- #3030: @josegonzalez feat: allow changing the system user the properties plugin uses
+- #3024: @jcrben Use high-availability pool keyserver during tests
+- #3017: @josegonzalez feat: add pre-start trigger for notifying on application start
+
+### Documentation
+
+- #3020: @gliwka Point to docs in the right version
+- #3016: @josegonzalez Update nginx template example to use http2 when available
+
+## 0.11.2
+
+### Bug Fixes
+
+- #3014: @josegonzalez fix: handle case where DOKKU_DOCKERFILE_PORTS is an empty string
+- #3013: @alexquick Fix some issues with config/network/repo help output
+- #3012: @alexquick Fail when setting/unsetting invalid keys
+- #3011: @alexquick Forward output from plugn triggers to user
+- #3004: @josegonzalez Return/Exit 1 when an image being deployed is invalid
+
+### Documentation
+
+- #3015: @elia Tiny fixes to triggers documentation
+
+## 0.11.1
+
+### Bug Fixes
+
+- #3010: @josegonzalez fix: route config_all to the `config` command to fix datastore plugin usage
+- #3009: @josegonzalez fix: correct the guard around the config_export call in config_sub
+- #3006: @josegonzalez fix: do not allow shadowing of the CACHE_DIR variable
+- #3005: @josegonzalez fix: persist users in the dokku group through installations
+- #3003: @josegonzalez Fix issues in apps:clone calls
+- #3001: @josegonzalez fix: allow applications to begin with numeric values
+
+### New Features
+
+- #3002: @josegonzalez fix: omit redirection of docker build output
+- #3000: @josegonzalez fix: remove golang files and triggers directory for packaging
+
+## 0.11.0
+
+### Bug Fixes
+
+- #2998: @josegonzalez Fix issues in release process
+- #2993: @josegonzalez Add config_all alias for plugin usage
+- #2972: @buckle2000 Correct typo in docker-options:remove error output
+- #2964: @znz Remove unused variable
+- #2967: @znz Fix indentation in test file
+- #2963: @znz Correct typos in config plugin and remove potential infinite recursion issue
+- #2951: @josegonzalez Handle case where the app directory is a symlink
+- #2939: @znz Remove unnecessary lines
+- #2945: @znz Fix network plugin version
+- #2937: @michaelshobbs Strip restart flag from app_user_pre_deploy_trigger
+- #2931: @josegonzalez Upgrade git package for CI
+- #2928: @silverfix Do not overwrite the VHOST file during installation if it exists
+- #2926: @vtavernier Remove leading forward slash from app name in git-upload-pack
+
+### New Features
+
+- #2985: @bitmand Build a custom dhparam file once for nginx and include it as default
+- #2974: @josegonzalez Upgrade to herokuish 0.3.33
+- #2973: @josegonzalez Allow usage of git 2.13.0+ by unsetting GIT_QUARANTINE_PATH during git worktree usage
+- #2971: @miraculixx Add support for older virtualbox versions in official Dokku Vagrantfile
+- #2966: @znz Simplify internal config functions to reduce duplication
+- #2751: @alexquick Move config plugin to golang
+- #2938: @michaelshobbs Upgrade to golang 1.9.1
+- #2736: @josegonzalez Implement Network Plugin
+- #2929: @michaelshobbs Add codacy config and coverage targets
+
+### Documentation
+
+- #2935: @jcrben Document how to make herokuish optional during the bootstrap installation
+- #2982: @agorf Correct typo in user management docs
+- #2981: @agorf Correct typos in process management docs
+- #2969: @znz Correct comments on network triggers
+- #2965: @znz Remove spaces from config subcommand help output to mirror help output of other subcommands
+- #2954: @mrname Add vernemq community datastore plugin to docs
+- #2944: @axilleas Fix syntax typo in debian installation docs
+- #2932: @znz Update code comment to match documentation
+- #2933: @znz Fix version number for network binding documentation
+
+## 0.10.5
+
+### Bug Fixes
+
+- #2912: @josegonzalez Add missing depends statement for rsyslog
+- #2906: @manuel-colmenero Check the location of nginx in a central way
+- #2895: @josegonzalez cd to app directory when calling git worktree add
+
+### Documentation
+
+- #2922: @axilleas Clarify the minimum Nginx version for HTTP/2 support
+- #2919: @wootwoot1234 Update nginx documentation surrounding file uploading for php buildpack users
+- #2913: @znz Fix a typo in the rpm release script
+- #2910: @buckle2000 Add a note about using the full git url for non-compliant toolchains
+
+## 0.10.4
+
+### Bug Fixes
+
+- #2894: @josegonzalez fix: bail if any step in the release process fails
+- #2880: @josegonzalez fix: properly detect empty subcommands
+- #2881: @josegonzalez Verify app name on git push
+- #2858: @cstroe Use correct port number for the upstream.
+- #2848: @josegonzalez Ensure https applications return an https url from `dokku url`
+- #2839: @josegonzalez fix: skip clearing cache if we are not building a herokuish image
+
+### New Features
+
+- #2890: @michaelshobbs use circleci 2.0
+- #2847: @scjody Add nginx ppa before installing Dokku
+- #2850: @michaelshobbs add optional PROC_TYPE and CONTAINER_INDEX to docker-args-deploy plugn trigger
+- #2840: @josegonzalez Add DYNO environment variable to run containers
+- #2824: @josegonzalez Upgrade herokuish to version 0.3.31
+
+### Documentation
+
+- #2861: @adelq Use non-deprecated apps command
+- #2878: @m0rth1um Add telegram notifications plugin
+- #2876: @josegonzalez docs: clarify storage documentation caveats
+- #2873: @josegonzalez docs: add a note on which docs to look at for customizing nginx docs
+- #2867: @josegonzalez docs: cleanup help output for dokku shell
+- #2859: @josegonzalez docs: use relative link for application deployment doc
+- #2866: @josegonzalez Add missing migration guides
+- #2863: @josegonzalez docs: fix syntax on getting started docs
+- #2836: @fishnux Add a note regarding nginx dependency to installation docs
+- #2834: @iansu Clarify port exposure in Dockerfile documentation
+
 ## 0.10.3
 
 ### Bug Fixes

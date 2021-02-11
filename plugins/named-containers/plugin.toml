@@ -1,4 +1,0 @@
-[plugin]
-description = "dokku core named containers plugin"
-version = "0.10.3"
-[plugin.config]

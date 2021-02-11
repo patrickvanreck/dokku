@@ -1,5 +1,5 @@
 # Dokku
-[![Build Status](https://img.shields.io/circleci/project/dokku/dokku/master.svg?style=flat-square "Build Status")](https://circleci.com/gh/dokku/dokku/tree/master)
+[![Build Status](https://github.com/dokku/dokku/workflows/CI/badge.svg)](https://github.com/dokku/dokku/actions?query=workflow%3ACI)
 [![Ubuntu Package](https://img.shields.io/badge/package-ubuntu-brightgreen.svg?style=flat-square "Ubuntu Package")](https://packagecloud.io/dokku/dokku)
 [![Arch Package](https://img.shields.io/badge/package-arch-brightgreen.svg?style=flat-square "Arch Package")](https://aur.archlinux.org/packages/dokku/)
 [![IRC Network](https://img.shields.io/badge/irc-freenode-blue.svg?style=flat-square "IRC Freenode")](https://webchat.freenode.net/?channels=dokku)
@@ -7,13 +7,11 @@
 [![Documentation](https://img.shields.io/badge/docs-viewdocs-blue.svg?style=flat-square "Viewdocs")](http://dokku.viewdocs.io/dokku/)
 [![OpenCollective](https://opencollective.com/dokku/sponsors/badge.svg?style=flat-square)](#sponsors)
 [![OpenCollective](https://opencollective.com/dokku/backers/badge.svg?style=flat-square)](#backers)
-[![Gratipay](https://img.shields.io/gratipay/dokku.svg?style=flat-square)](https://gratipay.com/dokku/)
+[![Patreon](https://img.shields.io/badge/patreon-donate-green.svg?style=flat-square)](https://www.patreon.com/dokku/)
 
 Docker powered mini-Heroku. The smallest PaaS implementation you've ever seen.
 
 ## Sponsors
-
-See our list of past sponsors in the [SPONSORS](https://github.com/dokku/dokku/blob/master/SPONSORS.md) file.
 
 Become a sponsor and get your logo on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/dokku#sponsor)]
 
@@ -88,19 +86,21 @@ Support us with a monthly donation and help us continue our activities. [[Become
 
 A fresh VM running any of the following operating systems:
 
-- Ubuntu 16.04 x64
-- Ubuntu 14.04 x64
-- Debian 8.2 x64
+- Ubuntu 16.04/18.04/20.04 x64 - Any currently supported release
+- Debian 9+ x64
 - CentOS 7 x64 *(experimental)*
 - Arch Linux x64 *(experimental)*
+
+An SSH keypair that can be used for application deployment. If this exists before installation, it will be automatically imported into dokku.
+Otherwise, you will need to import the keypair manually after installation using `dokku ssh-keys:add`.
 
 ## Installation
 
 To install the latest stable release, run the following commands as a user who has access to `sudo`:
 
 ```shell
-wget https://raw.githubusercontent.com/dokku/dokku/v0.10.3/bootstrap.sh
-sudo DOKKU_TAG=v0.10.3 bash bootstrap.sh
+wget https://raw.githubusercontent.com/dokku/dokku/v0.23.3/bootstrap.sh
+sudo DOKKU_TAG=v0.23.3 bash bootstrap.sh
 ```
 
 You can then proceed to the ip address or domain name associated with your server to complete the web-based installation.

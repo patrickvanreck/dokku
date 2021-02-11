@@ -1,35 +1,83 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 import cgi
 import json
 import os
 import re
-import SimpleHTTPServer
-import SocketServer
+import shutil
+try:
+    import SimpleHTTPServer
+    import SocketServer
+except ImportError:
+    import http.server as SimpleHTTPServer
+    import socketserver as SocketServer
 import subprocess
 import sys
 import threading
 
-VERSION = 'v0.10.3'
+VERSION = 'v0.23.3'
+
+def bytes_to_string(b):
+    if type(b) == bytes:
+        encoding = sys.stdout.encoding
+        if encoding is None:
+            encoding = 'utf-8'
+        b = b.decode(encoding)
+    b = b.strip()
+    return b
+
+
+def string_to_bytes(s):
+    if type(s) == str:
+        encoding = sys.stdout.encoding
+        if encoding is None:
+            encoding = 'utf-8'
+        s = s.encode(encoding)
+    return s
+
 
 hostname = ''
 try:
     command = "bash -c '[[ $(dig +short $HOSTNAME) ]] && echo $HOSTNAME || wget -q -O - icanhazip.com'"
-    hostname = subprocess.check_output(command, shell=True)
-    if ':' in hostname:
-        hostname = ''
+    hostname = bytes_to_string(subprocess.check_output(command, shell=True))
 except subprocess.CalledProcessError:
     pass
 
-key_file = os.getenv('KEY_FILE', '/root/.ssh/authorized_keys')
+key_file = os.getenv('KEY_FILE', None)
+if os.path.isfile('/home/ec2-user/.ssh/authorized_keys'):
+    key_file = '/home/ec2-user/.ssh/authorized_keys'
+elif os.path.isfile('/home/ubuntu/.ssh/authorized_keys'):
+    key_file = '/home/ubuntu/.ssh/authorized_keys'
+else:
+    key_file = '/root/.ssh/authorized_keys'
 
 admin_keys = []
 if os.path.isfile(key_file):
     try:
         command = "cat {0}".format(key_file)
-        admin_keys = subprocess.check_output(command, shell=True).strip().split("\n")
+        admin_keys = bytes_to_string(subprocess.check_output(command, shell=True)).strip().split("\n")
     except subprocess.CalledProcessError:
         pass
+
+ufw_display = 'block'
+try:
+    command = "sudo ufw status"
+    ufw_output = bytes_to_string(subprocess.check_output(command, shell=True).strip())
+    if "inactive" in ufw_output:
+        ufw_display = 'none'
+except subprocess.CalledProcessError:
+    ufw_display = 'none'
+
+
+nginx_dir = '/etc/nginx'
+nginx_init = '/etc/init.d/nginx'
+try:
+    command = "test -x /usr/bin/openresty"
+    subprocess.check_output(command, shell=True)
+    nginx_dir = '/usr/local/openresty/nginx/conf'
+    nginx_init = '/etc/init.d/openresty'
+except subprocess.CalledProcessError:
+    pass
 
 
 def check_boot():
@@ -37,7 +85,7 @@ def check_boot():
         return
     init_dir = os.getenv('INIT_DIR', '/etc/init')
     systemd_dir = os.getenv('SYSTEMD_DIR', '/etc/systemd/system')
-    nginx_dir = os.getenv('NGINX_DIR', '/etc/nginx/conf.d')
+    nginx_conf_dir = os.getenv('NGINX_CONF_DIR', '{0}/conf.d'.format(nginx_dir))
 
     if os.path.exists(init_dir):
         with open('{0}/dokku-installer.conf'.format(init_dir), 'w') as f:
@@ -54,8 +102,8 @@ def check_boot():
             f.write("[Install]\n")
             f.write("WantedBy=multi-user.target\n")
             f.write("WantedBy=graphical.target\n")
-    if os.path.exists(nginx_dir):
-        with open('{0}/dokku-installer.conf'.format(nginx_dir), 'w') as f:
+    if os.path.exists(nginx_conf_dir):
+        with open('{0}/dokku-installer.conf'.format(nginx_conf_dir), 'w') as f:
             f.write("upstream dokku-installer { server 127.0.0.1:2000; }\n")
             f.write("server {\n")
             f.write("  listen      80;\n")
@@ -64,18 +112,27 @@ def check_boot():
             f.write("  }\n")
             f.write("}\n")
 
-    subprocess.call('rm -f /etc/nginx/sites-enabled/*', shell=True)
+    subprocess.call('rm -f {0}/sites-enabled/*'.format(nginx_dir), shell=True)
     sys.exit(0)
 
 
 class GetHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+    def write_content(self, content):
+        try:
+            self.wfile.write(content)
+        except TypeError:
+            self.wfile.write(string_to_bytes(content))
+
+
     def do_GET(self):
         content = PAGE.replace('{VERSION}', VERSION)
+        content = content.replace('{UFW_DISPLAY}', ufw_display)
         content = content.replace('{HOSTNAME}', hostname)
+        content = content.replace('{AUTHORIZED_KEYS_LOCATION}', key_file)
         content = content.replace('{ADMIN_KEYS}', "\n".join(admin_keys))
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(content)
+        self.write_content(content)
 
     def do_POST(self):
         if self.path not in ['/setup', '/setup/']:
@@ -87,19 +144,30 @@ class GetHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                                       'REQUEST_METHOD': 'POST',
                                       'CONTENT_TYPE': self.headers['Content-Type']})
 
-        vhost_enable = 'false'
         dokku_root = os.getenv('DOKKU_ROOT', '/home/dokku')
+        dokku_user = os.getenv('DOKKU_SYSTEM_GROUP', 'dokku')
+        dokku_group = os.getenv('DOKKU_SYSTEM_USER', 'dokku')
+
+        vhost_enable = 'false'
+        vhost_filename = '{0}/VHOST'.format(dokku_root)
+
         if 'vhost' in params and params['vhost'].value == 'true':
             vhost_enable = 'true'
-            with open('{0}/VHOST'.format(dokku_root), 'w') as f:
-                f.write(params['hostname'].value)
+            with open(vhost_filename, 'w') as f:
+                f.write(params['hostname'].value.strip("/"))
+            shutil.chown(vhost_filename, dokku_user, dokku_group)
         else:
             try:
-                os.remove('{0}/VHOST'.format(dokku_root))
+                os.remove(vhost_filename)
             except OSError:
                 pass
-        with open('{0}/HOSTNAME'.format(dokku_root), 'w') as f:
-            f.write(params['hostname'].value)
+
+        hostname_filename = '{0}/HOSTNAME'.format(dokku_root)
+
+        with open(hostname_filename, 'w') as f:
+            f.write(params['hostname'].value.strip("/"))
+
+        shutil.chown(hostname_filename, dokku_user, dokku_group)
 
         for (index, key) in enumerate(params['keys'].value.splitlines(), 1):
             user = 'admin'
@@ -116,10 +184,14 @@ class GetHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             user = user + str(index)
             command = ['sshcommand', 'acl-add', 'dokku', user]
             proc = subprocess.Popen(command, stdin=subprocess.PIPE)
-            proc.stdin.write(key)
+            try:
+                proc.stdin.write(key)
+            except TypeError:
+                proc.stdin.write(string_to_bytes(key))
             proc.stdin.close()
             proc.wait()
 
+        set_debconf_selection('boolean', 'nginx_enable', 'true')
         set_debconf_selection('boolean', 'skip_key_file', 'true')
         set_debconf_selection('boolean', 'vhost_enable', vhost_enable)
         set_debconf_selection('boolean', 'web_config', 'false')
@@ -128,9 +200,11 @@ class GetHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         if 'selfdestruct' in sys.argv:
             DeleteInstallerThread()
 
+        content = json.dumps({'status': 'ok'})
+
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(json.dumps({'status': 'ok'}))
+        self.write_content(content)
 
     def web_admin_user_exists(self):
         return self.user_exists('web-admin(\d+)')
@@ -145,11 +219,11 @@ class GetHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         max_num = 0
         exists = False
         for line in proc.stdout:
-            m = pattern.search(line)
+            m = pattern.search(bytes_to_string(line))
             if m:
                 # User of the form `user` or `user#` exists
                 exists = True
-                max_num = max(max_num, m.group(1))
+                max_num = max(max_num, int(m.group(1)))
         if exists:
             return max_num
         else:
@@ -185,7 +259,7 @@ class DeleteInstallerThread(object):
         thread.start()
 
     def run(self):
-        command = "rm /etc/nginx/conf.d/dokku-installer.conf && /etc/init.d/nginx stop && /etc/init.d/nginx start"
+        command = "rm {0}/conf.d/dokku-installer.conf && {1} stop && {1} start".format(nginx_dir, nginx_init)
         try:
             subprocess.call(command, shell=True)
         except:
@@ -203,77 +277,157 @@ def main():
 
     port = int(os.getenv('PORT', 2000))
     httpd = SocketServer.TCPServer(("", port), GetHandler)
-    print "Listening on 0.0.0.0:{0}, CTRL+C to stop".format(port)
+    print("Listening on 0.0.0.0:{0}, CTRL+C to stop".format(port))
     httpd.serve_forever()
 
 
 PAGE = """
 <html>
 <head>
+  <meta charset="utf-8" />
   <title>Dokku Setup</title>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <style>
+    .bd-callout {
+      padding: 1.25rem;
+      margin-top: 1.25rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid #eee;
+      border-left-width: .25rem;
+      border-radius: .25rem;
+    }
+    .bd-callout p:last-child {
+      margin-bottom: 0;
+    }
+    .bd-callout-info {
+      border-left-color: #5bc0de;
+    }
+    pre {
+      font-size: 80%;
+      margin-bottom: 0;
+    }
+    h1 small {
+      font-size: 50%;
+    }
+    h5 {
+      font-size: 1rem;
+    }
+    .container {
+      width: 640px;
+    }
+    .result {
+      padding-left: 20px;
+    }
+    input.form-control, textarea.form-control {
+      background-color: #fafbfc;
+      font-size: 14px;
+    }
+    input.form-control::placeholder, textarea.form-control::placeholder {
+      color:  #adb2b8
+    }
+  </style>
 </head>
 <body>
-  <div class="container" style="width: 640px;">
-  <form id="form" role="form">
-    <h1>Dokku Setup <small>{VERSION}</small></h1>
-    <div class="form-group">
-      <h3><small style="text-transform: uppercase;">Admin Access</small></h3>
-      <label for="key">Public Key</label><br />
-      <textarea class="form-control" name="keys" rows="7" id="key">{ADMIN_KEYS}</textarea>
-    </div>
-    <div class="form-group">
-      <h3><small style="text-transform: uppercase;">Hostname Configuration</small></h3>
-      <div class="form-group">
-        <label for="hostname">Hostname</label>
-        <input class="form-control" type="text" id="hostname" name="hostname" value="{HOSTNAME}" />
+  <div class="container">
+    <form id="form" role="form">
+      <h1 class="pt-3">Dokku Setup <small class="text-muted">{VERSION}</small></h1>
+      <div class="alert alert-warning small" role="alert">
+        <strong>Warning:</strong> The SSH key filled out here can grant root access to the server. Please complete the setup as soon as possible.
       </div>
-      <div class="checkbox">
-        <label><input id="vhost" name="vhost" type="checkbox" value="true"> Use <abbr title="Nginx will be run on port 80 and backend to your apps based on hostname">virtualhost naming</abbr> for apps</label>
+
+      <div class="row">
+        <div class="col">
+          <h3>Admin Access</h3>
+          <div class="form-group">
+            <label for="key">Public SSH Keys</label><br />
+            <textarea class="form-control" name="keys" rows="5" id="key" placeholder="Begins with 'ssh-rsa', 'ssh-dss', 'ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', or 'ecdsa-sha2-nistp521'">{ADMIN_KEYS}</textarea>
+            <small class="form-text text-muted">Public keys allow users to ssh onto the server as the <code>dokku</code> user, as well as remotely execute Dokku commands. They are currently auto-populated from: <code>{AUTHORIZED_KEYS_LOCATION}</code>, and can be changed later via the  <a href="http://dokku.viewdocs.io/dokku/deployment/user-management/" target="_blank"><code>dokku ssh-keys</code></a> plugin.</small>
+          </div>
+        </div>
       </div>
-      <p>Your app URLs will look like:</p>
-      <pre id="example">http://hostname:port</pre>
-    </div>
-    <button type="button" onclick="setup()" class="btn btn-primary">Finish Setup</button> <span style="padding-left: 20px;" id="result"></span>
-  </form>
+
+      <div class="row">
+        <div class="col">
+          <h3>Hostname Configuration</h3>
+          <div class="form-group">
+            <label for="hostname">Hostname</label>
+            <input class="form-control" type="text" id="hostname" name="hostname" value="{HOSTNAME}" placeholder="A hostname or ip address such as {HOSTNAME}" />
+            <small class="form-text text-muted">This will be used as the default host for all applications, and can be changed later via the <a href="http://dokku.viewdocs.io/dokku/configuration/domains/" target="_blank"><code>dokku domains:set-global</code></a> command.</small>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="vhost" name="vhost" value="true">
+            <label class="form-check-label" for="vhost">Use virtualhost naming for apps</label>
+            <small class="form-text text-muted">When enabled, Nginx will be run on port 80 and proxy requests to apps based on hostname.</small>
+            <small class="form-text text-muted">When disabled, a specific port will be setup for each application on first deploy, and requests to that port will be proxied to the relevant app.</small>
+          </div>
+          <div class="alert alert-warning small mt-3 d-{UFW_DISPLAY}" role="alert">
+            <strong>Warning:</strong> UFW is active. To allow traffic to specific ports, run <code>sudo ufw allow PORT</code> for the port in question.
+          </div>
+          <div class="bd-callout bd-callout-info">
+            <h5>What will app URLs look like?</h5>
+            <pre><code id="example">http://hostname:port</code></pre>
+          </div>
+        </div>
+      </div>
+      <button type="button" onclick="setup()" class="btn btn-primary">Finish Setup</button> <span class="result"></span>
+    </form>
   </div>
+
   <div id="error-output"></div>
   <script>
+    var $ = document.querySelector.bind(document)
+
     function setup() {
-      if ($.trim($("#key").val()) == "") {
+      if ($("#key").value.trim() == "") {
         alert("Your admin public key cannot be blank.")
         return
       }
-      if ($.trim($("#hostname").val()) == "") {
+      if ($("#hostname").value.trim() == "") {
         alert("Your hostname cannot be blank.")
         return
       }
-      data = $("#form").serialize()
-      $("input,textarea,button").prop("disabled", true);
-      $.post('/setup', data)
-        .done(function() {
-          $("#result").html("Success!")
-          window.location.href = "http://progrium.viewdocs.io/dokku/deployment/application-deployment/";
+      var data = new FormData($("#form"))
+
+      var inputs = [].slice.call(document.querySelectorAll("input, textarea, button"))
+      inputs.forEach(function (input) {
+        input.disabled = true
+      })
+
+      var result = $(".result")
+      fetch("/setup", {method: "POST", body: data})
+        .then(function(response) {
+            if (response.ok) {
+                return response.json()
+            } else {
+                throw new Error('Server returned error')
+            }
         })
-        .fail(function(data) {
-          $("#result").html("Something went wrong...")
-          $("#error-output").html(data.responseText)
-        });
+        .then(function(response) {
+          result.classList.add("text-success");
+          result.textContent = "Success! Redirecting in 3 seconds. .."
+          setTimeout(function() {
+            window.location.href = "http://dokku.viewdocs.io/dokku~{VERSION}/deployment/application-deployment/";
+          }, 3000);
+        })
+        .catch(function (error) {
+          result.classList.add("text-danger");
+          result.textContent = "Could not send the request"
+        })
     }
+
     function update() {
-      if ($("#vhost").is(":checked") && $("#hostname").val().match(/^(\d{1,3}\.){3}\d{1,3}$/)) {
+      if ($("#vhost").matches(":checked") && $("#hostname").value.match(/^(\d{1,3}\.){3}\d{1,3}$/)) {
         alert("In order to use virtualhost naming, the hostname must not be an IP but a valid domain name.")
-        $("#vhost").prop('checked', false);
+        $("#vhost").checked = false;
       }
-      if ($("#vhost").is(':checked')) {
-        $("#example").html("http://&lt;app-name&gt;."+$("#hostname").val())
+      if ($("#vhost").matches(':checked')) {
+        $("#example").textContent = "http://<app-name>."+$("#hostname").value
       } else {
-        $("#example").html("http://"+$("#hostname").val()+":&lt;app-port&gt;")
+        $("#example").textContent = "http://"+$("#hostname").value+":<app-port>"
       }
     }
-    $("#vhost").change(update);
-    $("#hostname").change(update);
+    $("#vhost").addEventListener("change", update);
+    $("#hostname").addEventListener("input", update);
     update();
   </script>
 </body>

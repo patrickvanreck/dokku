@@ -6,6 +6,7 @@ Pass [options](https://docs.docker.com/engine/reference/run/) to Docker during D
 
 ```
 docker-options:add <app> <phase(s)> OPTION    # Add Docker option to app for phase (comma-separated phase list)
+docker-options:clear <app> [<phase(s)>...]    # Clear a docker options from application
 docker-options:remove <app> <phase(s)> OPTION # Remove Docker option from app for phase (comma-separated phase list)
 docker-options:report [<app>] [<flag>]        # Displays a docker options report for one or more apps
 ```
@@ -23,6 +24,10 @@ Dokku deploys your application in multiple "phases" and the `docker-options` plu
 - `build`: the container that executes the appropriate buildpack
 - `deploy`: the container that executes your running/deployed application
 - `run`: the container that executes any arbitrary command via `dokku run`
+
+Manipulation of docker options will not restart running containers. This enables multiple options to be set/unset before final application. As such, changing an app's docker options must be followed by a `dokku ps:rebuild` in order to take effect.
+
+More information on supported Docker options can be found here: https://docs.docker.com/engine/reference/commandline/run/.
 
 ## Examples
 
@@ -44,7 +49,38 @@ dokku docker-options:add node-js-app run "-v /var/log/node-js-app:/app/logs"
 dokku docker-options:remove node-js-app run "-v /var/log/node-js-app:/app/logs"
 ```
 
-### Displaying docker-options reports about an app
+### Clear all Docker options for an app
+
+Docker options can be removed for a specific app using the `docker-options:clear` command.
+
+```shell
+dokku docker-options:clear node-js-app
+```
+
+```
+-----> Clearing docker-options for node-js-app on all phases
+```
+
+One or more valid phases can also be specified. Phases are comma delimited, and specifying an invalid phase will result in an error.
+
+```shell
+dokku docker-options:clear node-js-app run
+```
+
+```
+-----> Clearing docker-options for node-js-app on phase run
+```
+
+```shell
+dokku docker-options:clear node-js-app build,run
+```
+
+```
+-----> Clearing docker-options for node-js-app on phase build
+-----> Clearing docker-options for node-js-app on phase run
+```
+
+### Displaying docker-options reports for an app
 
 > New as of 0.8.1
 
@@ -77,9 +113,9 @@ dokku docker-options:report node-js-app
 
 ```
 =====> node-js-app docker options information
-       Storage build mounts:
-       Storage deploy mounts: -v /var/log/node-js-app:/app/logs
-       Storage run mounts:  -v /var/log/node-js-app:/app/logs
+       Docker options build:
+       Docker options deploy: -v /var/log/node-js-app:/app/logs
+       Docker options run:  -v /var/log/node-js-app:/app/logs
 ```
 
 You can pass flags which will output only the value of the specific information you want. For example:
@@ -87,26 +123,3 @@ You can pass flags which will output only the value of the specific information 
 ```shell
 dokku docker-options:report node-js-app --docker-options-build
 ```
-
-
-## Advanced usage
-
-In your applications folder `/home/dokku/app_name` create a file called `DOCKER_OPTIONS_RUN` (or `DOCKER_OPTIONS_BUILD` or `DOCKER_OPTIONS_DEPLOY`).
-
-Inside this file list one Docker option per line. For example:
-
-```shell
---link container_name:alias
--v /host/path:/container/path
--v /another/container/path
-```
-
-The above example will result in the following options being passed to Docker during `dokku run`:
-
-```shell
---link container_name:alias -v /host/path:/container/path -v /another/container/path
-```
-
-You may also include comments (lines beginning with a #) and blank lines in the DOCKER_OPTIONS file.
-
-More information on Docker options can be found here: https://docs.docker.com/engine/reference/commandline/run/.

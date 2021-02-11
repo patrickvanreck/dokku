@@ -6,14 +6,18 @@
 apps:clone <old-app> <new-app>                 # Clones an app
 apps:create <app>                              # Create a new app
 apps:destroy <app>                             # Permanently destroy an app
+apps:exists <app>                              # Checks if an app exists
 apps:list                                      # List your apps
+apps:lock <app>                                # Locks an app for deployment
+apps:locked <app>                              # Checks if an app is locked for deployment
 apps:rename <old-app> <new-app>                # Rename an app
 apps:report [<app>] [<flag>]                   # Display report about an app
+apps:unlock <app>                              # Unlocks an app for deployment
 ```
 
 ## Usage
 
-### Listing Applications
+### Listing applications
 
 > New as of 0.8.1. Use the `apps` command for older versions.
 
@@ -29,7 +33,7 @@ node-js-app
 python-app
 ```
 
-Note that you can easily hide extra output from Dokku commands by using the `--quiet` flag, which makes it easier to parse on the command-line.
+Note that you can easily hide extra output from Dokku commands by using the `--quiet` flag, which makes it easier to parse on the command line.
 
 ```shell
 dokku --quiet apps:list
@@ -39,6 +43,20 @@ dokku --quiet apps:list
 node-js-app
 python-app
 ```
+
+### Checking if an application exists
+
+For CI/CD pipelines, it may be useful to see if an application exists before creating a "review" application for a specific branch. You can do so via the `apps:exists` command:
+
+```shell
+dokku apps:exists  node-js-app
+```
+
+```
+App does not exist
+```
+
+The `apps:exists` command will return non-zero if the application does not exist, and zero if it does.
 
 ### Manually creating an application
 
@@ -54,9 +72,9 @@ Creating node-js-app... done
 
 Once created, you can configure the application as normal, and deploy the application whenever ready. This is useful for cases where you may wish to do any of the following kinds of tasks:
 
-- configure domain names and ssl certificates
-- create and link datastores
-- set environment variables
+- Configure domain names and SSL certificates.
+- Create and link datastores.
+- Set environment variables.
 
 ### Removing a deployed app
 
@@ -85,6 +103,15 @@ dokku --force apps:destroy node-js-app
 Destroying node-js-app (including all add-ons)
 ```
 
+The `--force` flag can also be specified on the command vs globally:
+
+```shell
+dokku apps:destroy --force node-js-app
+```
+
+```
+Destroying node-js-app (including all add-ons)
+```
 
 Destroying an application will unlink all linked services and destroy any config related to the application. Note that linked services will retain their data for later use (or removal).
 
@@ -117,9 +144,15 @@ Renaming node-js-app to io-js-app... done
 
 This will copy all of your app's contents into a new app directory with the name of your choice, delete your old app, then rebuild the new version of the app and deploy it. All of your config variables, including database urls, will be preserved.
 
+By default, Dokku will deploy the renamed app, though you can skip the deploy by using the `--skip-deploy` flag:
+
+```shell
+dokku apps:rename --skip-deploy node-js-app io-js-app
+```
+
 ### Cloning an existing app
 
-> New as of 0.8.1
+> New as of 0.11.5
 
 You can clone an existing app using the `apps:clone` command.  Note that the application *must* have been deployed at least once, or cloning will not complete successfully:
 
@@ -131,17 +164,76 @@ dokku apps:clone node-js-app io-js-app
 Cloning node-js-app to io-js-app... done
 ```
 
-This will copy all of your app's contents into a new app directory with the name of your choice and then rebuild the new version of the app and deploy it. All of your config variables, including database urls, will be preserved.
+This will copy all of your app's contents into a new app directory with the name of your choice and then rebuild the new version of the app and deploy it with the following caveats:
 
-> Warning: If you have exposed specific ports via docker-options, added generic domains, or performed anything that cannot be done against multiple applications, `apps:clone` may result in errors.
+- All of your environment variables, including database urls, will be preserved.
+- Custom domains are not applied to the new app.
+- SSL certificates will not be copied to the new app.
+- Port mappings with the scheme `https` and host-port `443` will be skipped.
 
-By default, Dokku will deploy this new application, though you can skip the deploy by using the `--skip-deploy` flag:
+> Warning: If you have exposed specific ports via `docker-options` plugin, or performed anything that cannot be done against multiple applications, `apps:clone` may result in errors.
+
+By default, Dokku will deploy this new app, though you can skip the deploy by using the `--skip-deploy` flag:
 
 ```shell
 dokku apps:clone --skip-deploy node-js-app io-js-app
 ```
 
-### Displaying reports about an app
+Finally, if the application already exists, you may wish to ignore errors resulting from attempting to clone over it. To do so, you can use the `--ignore-existing` flag. A warning will be emitted, but the command will return `0`.
+
+```shell
+dokku apps:clone --ignore-existing node-js-app io-js-app
+```
+
+### Locking app deploys
+
+> New as of 0.11.6
+
+If you wish to disable deploying for a period of time, this can be done via deploy locks. Normally, deploy locks exist only for the duration of a deploy so as to avoid deploys from colliding, but a deploy lock can be created by running the `apps:lock` command.
+
+
+```shell
+dokku apps:lock node-js-app
+```
+
+```
+-----> Deploy lock created
+```
+
+### Unlocking app deploys
+
+> New as of 0.11.6
+
+In some cases, it may be necessary to remove an existing deploy lock. This can be performed via the `apps:unlock` command.
+
+> Warning: Removing the deploy lock *will not* stop in progress deploys. At this time, in progress deploys will need to be manually terminated by someone with server access.
+
+```shell
+dokku apps:unlock node-js-app
+```
+
+```
+ !     A deploy may be in progress.
+ !     Removing the app lock will not stop in progress deploys.
+-----> Deploy lock removed.
+```
+
+### Checking lock status
+
+> New as of 0.13.0
+
+In some cases, you may wish to inspect the state of an app lock. To do so, you can issue an `apps:lock` command. This will exit non-zero if there is no app lock in place.
+
+
+```shell
+dokku apps:locked node-js-app
+```
+
+```
+Deploy lock does not exist
+```
+
+### Displaying reports for an app
 
 > New as of 0.8.1
 
@@ -152,18 +244,18 @@ dokku apps:report
 ```
 
 ```
-=====> node-js-app
+=====> node-js-app app information
        App dir:             /home/dokku/node-js-app
-       Git sha:             dbddc3f                  
-       App cid:             7b18489c98be             
-       Status:              running                  
-=====> python-sample
-not deployed
-=====> ruby-sample
+       App deploy source:   git
+       App locked:          false
+=====> python-sample app information
+       App dir:             /home/dokku/python-sample
+       App deploy source:
+       App locked:          false
+=====> ruby-sample app information
        App dir:             /home/dokku/ruby-sample
-       Git sha:             a2d477c
-       App cid:             78a44d71012a
-       Status:              running
+       App deploy source:   git
+       App locked:          false
 ```
 
 You can run the command for a specific app also.
@@ -173,15 +265,14 @@ dokku apps:report node-js-app
 ```
 
 ```
-=====> node-js-app
+=====> node-js-app app information
        App dir:             /home/dokku/node-js-app
-       Git sha:             dbddc3f                  
-       App cid:             7b18489c98be             
-       Status:              running   
+       App deploy source:   git
+       App locked:          false
 ```
 
 You can pass flags which will output only the value of the specific information you want. For example:
 
 ```shell
-dokku apps:report node-js-app --git-sha
+dokku apps:report node-js-app --app-dir
 ```

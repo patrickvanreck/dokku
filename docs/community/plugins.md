@@ -18,33 +18,34 @@ Let's take a quick look at the current Dokku nginx plugin that's shipped with Do
 
 [See the full documentation](/docs/development/plugin-creation.md).
 
-## Official Plugins (Beta)
+## Official Plugins
 
-The following plugins are available and provided by Dokku maintainers. Where noted, these plugins should be considered beta software and may not have been used as thoroughly as community plugins. Please file issues against their respective issue trackers.
+The following plugins are available and provided by Dokku maintainers.  Please file issues against their respective issue trackers.
 
 | Plugin                                                                                            | Author                | Compatibility         |
 | ------------------------------------------------------------------------------------------------- | --------------------- | --------------------- |
-| [CouchDB (beta)](https://github.com/dokku/dokku-couchdb)                                          | [dokku][]             | 0.4.0+                |
-| [Elasticsearch (beta)](https://github.com/dokku/dokku-elasticsearch-plugin)                       | [dokku][]             | 0.4.0+                |
-| [Grafana/Graphite/Statsd (beta)](https://github.com/dokku/dokku-graphite-grafana)                 | [dokku][]             | 0.4.0+                |
-| [MariaDB (beta)](https://github.com/dokku/dokku-mariadb-plugin)                                   | [dokku][]             | 0.4.0+                |
-| [Memcached (beta)](https://github.com/dokku/dokku-memcached-plugin)                               | [dokku][]             | 0.4.0+                |
-| [Mongo (beta)](https://github.com/dokku/dokku-mongo-plugin)                                       | [dokku][]             | 0.4.0+                |
-| [MySQL (beta)](https://github.com/dokku/dokku-mysql-plugin)                                       | [dokku][]             | 0.4.0+                |
-| [Nats (beta)](https://github.com/dokku/dokku-nats)                                                | [dokku][]             | 0.4.0+                |
-| [Postgres (beta)](https://github.com/dokku/dokku-postgres-plugin)                                 | [dokku][]             | 0.4.0+                |
-| [RabbitMQ (beta)](https://github.com/dokku/dokku-rabbitmq-plugin)                                 | [dokku][]             | 0.4.0+                |
-| [Redis (beta)](https://github.com/dokku/dokku-redis-plugin)                                       | [dokku][]             | 0.4.0+                |
-| [RethinkDB (beta)](https://github.com/dokku/dokku-rethinkdb-plugin)                               | [dokku][]             | 0.4.0+                |
+| [CouchDB](https://github.com/dokku/dokku-couchdb)                                                 | [dokku][]             | 0.4.0+                |
+| [Elasticsearch](https://github.com/dokku/dokku-elasticsearch-plugin)                              | [dokku][]             | 0.4.0+                |
+| [Grafana/Graphite/Statsd](https://github.com/dokku/dokku-graphite-grafana)                        | [dokku][]             | 0.4.0+                |
+| [MariaDB](https://github.com/dokku/dokku-mariadb-plugin)                                          | [dokku][]             | 0.4.0+                |
+| [Memcached](https://github.com/dokku/dokku-memcached-plugin)                                      | [dokku][]             | 0.4.0+                |
+| [Mongo](https://github.com/dokku/dokku-mongo-plugin)                                              | [dokku][]             | 0.4.0+                |
+| [MySQL](https://github.com/dokku/dokku-mysql-plugin)                                              | [dokku][]             | 0.4.0+                |
+| [Nats](https://github.com/dokku/dokku-nats)                                                       | [dokku][]             | 0.4.0+                |
+| [Postgres](https://github.com/dokku/dokku-postgres-plugin)                                        | [dokku][]             | 0.4.0+                |
+| [RabbitMQ](https://github.com/dokku/dokku-rabbitmq-plugin)                                        | [dokku][]             | 0.4.0+                |
+| [Redis](https://github.com/dokku/dokku-redis-plugin)                                              | [dokku][]             | 0.4.0+                |
+| [RethinkDB](https://github.com/dokku/dokku-rethinkdb-plugin)                                      | [dokku][]             | 0.4.0+                |
 | [Copy Files to Image](https://github.com/dokku/dokku-copyfiles-to-image)                          | [dokku][]             | 0.4.0+                |
-| [HTTP Auth (beta)](https://github.com/dokku/dokku-http-auth)                                      | [dokku][]             | 0.4.0+                |
-| [Let's Encrypt (beta)](https://github.com/dokku/dokku-letsencrypt)                                | [dokku][]             | 0.4.0+                |
-| [Maintenance mode (beta)](https://github.com/dokku/dokku-maintenance)                             | [dokku][]             | 0.4.0+                |
-| [Redirect (beta)](https://github.com/dokku/dokku-redirect)                                        | [dokku][]             | 0.4.0+                |
+| [HTTP Auth](https://github.com/dokku/dokku-http-auth)                                             | [dokku][]             | 0.4.0+                |
+| [Let's Encrypt](https://github.com/dokku/dokku-letsencrypt)                                       | [dokku][]             | 0.4.0+                |
+| [Maintenance mode](https://github.com/dokku/dokku-maintenance)                                    | [dokku][]             | 0.4.0+                |
+| [Redirect](https://github.com/dokku/dokku-redirect)                                               | [dokku][]             | 0.4.0+                |
+| [Registry](https://github.com/dokku/dokku-registry)                                               | [dokku][]             | 0.12.0+
 
 ## Community plugins
 
-Note: The following plugins have been supplied by our community and may not have been tested by Dokku maintainers.
+> Warning: The following plugins have been supplied by our community and may not have been tested by Dokku maintainers.
 
 [256dpi]: https://github.com/256dpi
 [abossard]: https://github.com/dudagroup
@@ -57,6 +58,8 @@ Note: The following plugins have been supplied by our community and may not have
 [Aluxian]: https://github.com/Aluxian
 [Aomitayo]: https://github.com/Aomitayo
 [apmorton]: https://github.com/apmorton
+[artofrawr]: https://github.com/artofrawr
+[badsyntax]: https://github.com/badsyntax
 [basgys]: https://github.com/basgys
 [Benjamin-Dobell]: https://github.com/Benjamin-Dobell
 [blag]: https://github.com/blag
@@ -71,10 +74,10 @@ Note: The following plugins have been supplied by our community and may not have
 [dokku]: https://github.com/dokku
 [dokku-community]: https://github.com/dokku-community
 [dyson]: https://github.com/dyson
-[F4-Group]: https://github.com/F4-Group
 [fermuch]: https://github.com/fermuch
 [fgrehm]: https://github.com/fgrehm
 [Flink]: https://github.com/Flink
+[fomojola]: https://github.com/fomojola
 [gdi2290]: https://github.com/gdi2290
 [hughfletcher]: https://github.com/hughfletcher
 [iamale]: https://github.com/iamale
@@ -89,6 +92,7 @@ Note: The following plugins have been supplied by our community and may not have
 [Kloadut]: https://github.com/Kloadut
 [krisrang]: https://github.com/krisrang
 [luxifer]: https://github.com/luxifer
+[m0rth1um]: https://github.com/m0rth1um
 [Maciej Łebkowski]: https://github.com/mlebkowski
 [matto1990]: https://github.com/matto1990
 [mbreit]: https://github.com/mbreit
@@ -96,9 +100,11 @@ Note: The following plugins have been supplied by our community and may not have
 [michaelshobbs]: https://github.com/michaelshobbs
 [mikecsh]: https://github.com/mikecsh
 [mikexstudios]: https://github.com/mikexstudios
+[mimischi]: https://github.com/mimischi
 [mixxorz]: https://github.com/mixxorz
 [mlebkowski]: https://github.com/mlebkowski
 [motin]: https://github.com/motin
+[mrname]: https://github.com/mrname
 [musicglue]: https://github.com/musicglue
 [neam]: https://github.com/neam
 [nickcharlton]: https://github.com/nickcharlton
@@ -122,6 +128,10 @@ Note: The following plugins have been supplied by our community and may not have
 [wmluke]: https://github.com/wmluke
 [Zenedith]: https://github.com/Zenedith
 [fteychene]: https://github.com/fteychene
+[sarendsen]: https://github.com/sarendsen
+[baikunz]: https://github.com/baikunz
+[lazyatom]: https://github.com/lazyatom
+[ollej]: https://github.com/ollej
 
 ### Datastores
 
@@ -151,6 +161,7 @@ Note: The following plugins have been supplied by our community and may not have
 | [RabbitMQ](https://github.com/jlachowski/dokku-rabbitmq-plugin)                                   | [jlachowski][]        | 0.3.x                 |
 | [RabbitMQ (single container)](https://github.com/jlachowski/dokku-rabbitmq-single-plugin)         | [jlachowski][]        | 0.3.x                 |
 | [ElasticMQ (SQS compatible)](https://github.com/cu12/dokku-elasticmq)                             | [cu12][]              | 0.5.0+                |
+| [VerneMQ (MQTT Broker)](https://github.com/SpinifexGroup/dokku-vernemq)                           | [mrname][]            | 0.4.0+                |
 
 #### Other
 
@@ -160,6 +171,7 @@ Note: The following plugins have been supplied by our community and may not have
 | [FakeSNS](https://github.com/cu12/dokku-fake_sns)                                                 | [cu12][]              | 0.5.0+                |
 | [InfluxDB](https://github.com/basgys/dokku-influxdb)                                              | [basgys][]            | 0.4.x                 |
 | [RethinkDB](https://github.com/stuartpb/dokku-rethinkdb-plugin)                                   | [stuartpb][]          | 0.3.x                 |
+| [Headless Chrome](https://github.com/lazyatom/dokku-chrome)                                       | [lazyatom][]          | 0.8.1+                |
 
 [dccee02]: https://github.com/jeffutter/dokku-riakcs-plugin/commit/dccee02702e7001851917b7814e78a99148fb709
 [c77cbf1]: https://github.com/dokku/dokku/commit/c77cbf1d3ae07f0eafb85082ed7edcae9e836147
@@ -173,9 +185,8 @@ Note: The following plugins have been supplied by our community and may not have
 | [Docker Direct](https://github.com/josegonzalez/dokku-docker-direct)                              | [josegonzalez][]      | 0.4.0+                |
 | [Dokku Clone](https://github.com/crisward/dokku-clone)                                            | [crisward][]          | 0.4.0+                |
 | [Dokku Copy App Config Files](https://github.com/josegonzalez/dokku-supply-config)                | [josegonzalez][]      | 0.4.0+                |
-| [Dokku Registry](https://github.com/agco-adm/dokku-registry)<sup>1</sup>                          | [agco-adm][]          | 0.4.0+                |
-| [Dokku Require](https://github.com/crisward/dokku-require)<sup>2</sup>                            | [crisward][]          | 0.4.0+                |
-| [git rev-parse HEAD in env](https://github.com/dokku-community/dokku-git-rev)                     | [cjblomqvist][]       | 0.4.0+                |
+| [Dockerfile custom path](https://github.com/mimischi/dokku-dockerfile)                            | [mimischi][]          | 0.8.0+                               |
+| [Dokku Require](https://github.com/crisward/dokku-require)<sup>1</sup>                            | [crisward][]          | 0.4.0+                |
 | [Global Certificates](https://github.com/josegonzalez/dokku-global-cert)                          | [josegonzalez][]      | 0.5.0+                |
 | [Graduate (Environment Management)](https://github.com/glassechidna/dokku-graduate)               | [Benjamin-Dobell][]   | 0.4.0+                |
 | [Haproxy tcp load balancer](https://github.com/256dpi/dokku-haproxy)                              | [256dpi][]            | 0.4.0+                |
@@ -186,26 +197,31 @@ Note: The following plugins have been supplied by our community and may not have
 | [Open App Ports](https://github.com/josegonzalez/dokku-ports)                                     | [josegonzalez][]      | 0.3.x                 |
 | [Proctype Filter](https://github.com/michaelshobbs/dokku-proctype-filter)                         | [michaelshobbs][]     | 0.4.0+                |
 | [robots.txt](https://notabug.org/candlewaster/dokku-robots.txt)                                   | [candlewaster][]      | 0.4.x                 |
-| [SSH Deployment Keys](https://github.com/cedricziel/dokku-deployment-keys)<sup>3</sup>            | [cedricziel][]        | 0.4.0+                |
-| [SSH Hostkeys](https://github.com/cedricziel/dokku-hostkeys-plugin)<sup>4</sup>                   | [cedricziel][]        | 0.3.x                 |
+| [SSH Deployment Keys](https://github.com/cedricziel/dokku-deployment-keys)<sup>2</sup>            | [cedricziel][]        | 0.4.0+                |
+| [SSH Hostkeys](https://github.com/cedricziel/dokku-hostkeys-plugin)<sup>3</sup>                   | [cedricziel][]        | 0.3.x                 |
 | [Application build hook](https://github.com/fteychene/dokku-build-hook)                           | [fteychene][]         | 0.4.0+                 |
+| [Post Deploy Script](https://github.com/baikunz/dokku-post-deploy-script)                         | [baikunz][]           | 0.4.0+                 |
+| [Auto Sync](https://github.com/IdeaSynthesis/dokku-autosync)<sup>4</sup>                          | [fomojola][]          | 0.8.1+                |
+| [Deploy Webhook](https://github.com/IdeaSynthesis/dokku-deploy-webhook)<sup>5</sup>               | [fomojola][]          | 0.8.1+                |
 
 [217d00a]: https://github.com/dokku/dokku/commit/217d00a1bc47a7e24d8847617bb08a1633025fc7
 
-<sup>1</sup> On Heroku similar functionality is offered by the [heroku-labs pipeline feature](https://devcenter.heroku.com/articles/labs-pipelines), which allows you to promote builds across multiple environments (staging -> production)
+<sup>1</sup> Extends app.json support to include creating volumes and creating / linking databases on push
 
-<sup>2</sup> Extends app.json support to include creating volumes and creating / linking databases on push
+<sup>2</sup> Adds the possibility to add SSH deployment keys to receive private hosted packages
 
-<sup>3</sup> Adds the possibility to add SSH deployment keys to receive private hosted packages
+<sup>3</sup> Adds the ability to add custom hosts to the containers known_hosts file to be able to ssh them easily (useful with deployment keys)
 
-<sup>4</sup> Adds the ability to add custom hosts to the containers known_hosts file to be able to ssh them easily (useful with deployment keys)
+<sup>4</sup> Adds the ability to sync an application repo with a remote Github repo (useful for automated rebuilds without needing a git push from an external system
+
+<sup>5</sup> Adds the ability to invoke a post-deploy webhook with the IP, port and app name, all with a single config:set).
 
 ### Other Plugins
 
 | Plugin                                                                                            | Author                | Compatibility         |
 | ------------------------------------------------------------------------------------------------- | --------------------- | --------------------- |
 | [Airbrake deploy](https://github.com/Flink/dokku-airbrake-deploy)                                 | [Flink][]             | 0.4.0+                |
-| [APT](https://github.com/F4-Group/dokku-apt)                                                      | [F4-Group][]          | 0.4.0+                |
+| [APT](https://github.com/dokku-community/dokku-apt)                                               | [dokku-community][]   | 0.18.x+               |
 | [Bower install](https://github.com/alexanderbeletsky/dokku-bower-install)                         | [alexanderbeletsky][] | 0.3.x                 |
 | [Bower/Grunt](https://github.com/thrashr888/dokku-bower-grunt-build-plugin)                       | [thrashr888][]        | 0.3.x                 |
 | [Bower/Gulp](https://github.com/gdi2290/dokku-bower-gulp-build-plugin)                            | [gdi2290][]           | 0.3.x                 |
@@ -214,20 +230,28 @@ Note: The following plugins have been supplied by our community and may not have
 | [Chef cookbook](https://github.com/nickcharlton/dokku-cookbook)                                   | [nickcharlton][]      |                       |
 | [Docker auto persist volumes](https://github.com/Flink/dokku-docker-auto-volumes)                 | [Flink][]             | 0.4.0+                |
 | [Hostname](https://github.com/michaelshobbs/dokku-hostname)                                       | [michaelshobbs][]     | 0.4.0+                |
+| [Limit (Resource management)](https://github.com/sarendsen/dokku-limit)                           | [sarendsen][]         | 0.9.0+                |
 | [Logspout](https://github.com/michaelshobbs/dokku-logspout)                                       | [michaelshobbs][]     | 0.4.0+                |
+| [Syslog](https://github.com/michaelshobbs/dokku-syslog)                                           | [michaelshobbs][]     | 0.10.4+               |
 | [Long Timeout](https://github.com/investtools/dokku-long-timeout-plugin)                          | [investtools][]       | 0.4.0+                |
 | [Monit](https://github.com/cjblomqvist/dokku-monit)                                               | [cjblomqvist][]       | 0.3.x                 |
 | [Monorepo](https://github.com/iamale/dokku-monorepo)                                              | [iamale][]            | 0.4.0+                |
+| [Multi Dockerfile](https://github.com/artofrawr/dokku-multi-dockerfile)                           | [artofrawr][]         | 0.4.0+                |
 | [Node](https://github.com/ademuk/dokku-nodejs)                                                    | [ademuk][]            | 0.3.x                 |
 | [Node](https://github.com/pnegahdar/dokku-node)                                                   | [pnegahdar][]         | 0.3.x                 |
 | [Rollbar](https://github.com/iloveitaly/dokku-rollbar)                                            | [iloveitaly][]        | 0.5.0+                |
 | [Slack Notifications](https://github.com/ribot/dokku-slack)                                       | [ribot][]             | 0.4.0+                |
+| [Telegram Notifications](https://github.com/m0rth1um/dokku-telegram)                              | [m0rth1um][]          | 0.4.0+                |
 | [Tor](https://github.com/michaelshobbs/dokku-tor)                                                 | [michaelshobbs][]     | 0.4.0+                |
 | [User ACL](https://github.com/dokku-community/dokku-acl)                                          | [Maciej Łebkowski][]  | 0.4.0+                |
 | [Webhooks](https://github.com/nickstenning/dokku-webhooks)                                        | [nickstenning][]      | 0.3.x                 |
 | [Wkhtmltopdf](https://github.com/mbriskar/dokku-wkhtmltopdf)                                      | [mbriskar][]          | 0.4.0+                |
 | [Dokku Wordpress](https://github.com/dokku-community/dokku-wordpress)                             | [dokku-community][]      | 0.4.0+                |
 | [Access](https://github.com/mainto/dokku-access)                                                  | [mainto](https://github.com/mainto)            | 0.4.0+                |
+| [Dokku Nginx Trust Proxy](https://github.com/kingsquare/dokku-nginx-vhost-trustproxy)             | [kingsquare](https://github.com/kingsquare)  | 0.4.0+ |
+| [Fonts](https://github.com/ollej/dokku-fonts)             | [ollej]  | 0.19.11+ |
+| [Discourse](https://github.com/badsyntax/dokku-discourse)                                         | [badsyntax][]         | 0.21.4+               |
+
 
 ### Deprecated Plugins
 
@@ -241,6 +265,7 @@ The following plugins have been removed as their functionality is now in Dokku C
 | [Docker Options](https://github.com/dyson/dokku-docker-options)                                   | [dyson][]             | v0.3.17 (docker-options plugin)           |
 | [Dokku Name](https://github.com/alex-sherwin/dokku-name)                                          | [alex-sherwin][]      | v0.4.2 (named containers plugin)          |
 | [Events Logger](https://github.com/alessio/dokku-events)                                          | [alessio][]           | v0.3.21 (events plugin)                   |
+| [git rev-parse HEAD in env](https://github.com/dokku-community/dokku-git-rev)                     | [cjblomqvist][]       | v0.12.0 (enhanced core git plugin)        |
 | [Host Port binding](https://github.com/stuartpb/dokku-bind-port)                                  | [stuartpb][]          | v0.3.17 (docker-options plugin)           |
 | [Link Containers](https://github.com/rlaneve/dokku-link)                                          | [rlaneve][]           | v0.3.17 (docker-options plugin)           |
 | [List Containers](https://github.com/josegonzalez/dokku-list)                                     | [josegonzalez][]      | v0.3.14 (ps plugin)                       |
@@ -282,6 +307,7 @@ The following plugins are no longer maintained by their developers.
 | [CouchDB (multi containers)](https://github.com/Flink/dokku-couchdb-multi-containers)             | [Flink][]             | 0.4.0+                |
 | [CouchDB](https://github.com/racehub/dokku-couchdb-plugin)                                        | [RaceHub][]           | Compatible with 0.2.0 |
 | [Dokku Copy App Config Files](https://github.com/alexkruegger/dokku-app-configfiles)              | [alexkruegger][]      | Compatible with 0.3.17+ |
+| [Dokku Registry](https://github.com/agco-adm/dokku-registry)                                      | [agco-adm][]          | 0.4.0+
 | [Elasticsearch](https://github.com/robv/dokku-elasticsearch)                                      | [robv][]              | Not compatible with >= 0.3.0 (still uses /home/git) |
 | [Elasticsearch](https://github.com/blag/dokku-elasticsearch-plugin)<sup>1</sup>                   | [blag][]              | Compatible with 0.2.0 |
 | [Graphite/statsd](https://github.com/jlachowski/dokku-graphite-plugin)                            | [jlachowski][]        | < 0.4.0               |

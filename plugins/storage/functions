@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
-set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+set -eo pipefail
+[[ $DOKKU_TRACE ]] && set -x
 source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
 source "$PLUGIN_AVAILABLE_PATH/docker-options/functions"
 
 verify_paths() {
   declare desc="verifies storage paths"
-  echo "$1" | grep -qe '^/.*\:/' || dokku_log_fail "Storage path must be two valid paths divided by colon."
+  local -r passed_path=$1
+  if [[ "$passed_path" = /* ]]; then
+    echo "$passed_path" | grep -qe '^/.*\:/' || dokku_log_fail "Storage path must be two valid paths divided by colon."
+  else
+    echo "$passed_path" | grep -qe '^[a-zA-Z0-9]\{1\}[a-zA-Z0-9_.-]\+\:\/' || dokku_log_fail "Volume name must be two characters or more. Volume name must not contain invalid characters. Storage path must be two valid paths divided by colon."
+  fi
+
 }
 
 check_if_path_exists() {
@@ -18,5 +25,7 @@ check_if_path_exists() {
 get_bind_mounts() {
   declare desc="strips docker options and prints mounts"
   local -r phase_file_path=$1
-  [[ -r "$phase_file_path" ]] && sed -e '/^-v/!d' -e 's/^-v/    /' < "$phase_file_path"
+  if [[ -r "$phase_file_path" ]]; then
+    sed -e '/^-v/!d' -e 's/^-v/    /' <"$phase_file_path"
+  fi
 }

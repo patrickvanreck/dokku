@@ -2,9 +2,9 @@
 set -eo pipefail
 [[ $TRACE ]] && set -x
 
-readonly TMP_WORK_DIR="$(mktemp -d "/tmp/dokku-plugin-release.XXXX")"
+readonly TMP_WORK_DIR="$(mktemp -d "/tmp/dokku-plugin-release.XXXXXX")"
 
-trap 'rm -rf "$TMP_WORK_DIR" > /dev/null' RETURN INT TERM EXIT
+trap 'rm -rf "$TMP_WORK_DIR" >/dev/null' RETURN INT TERM EXIT
 
 log-info() {
   # shellcheck disable=SC2034
@@ -22,7 +22,7 @@ log-fail() {
   # shellcheck disable=SC2034
   declare desc="Log fail formatter"
   log-error "$*"
-  exit -1
+  exit 1
 }
 
 fn-github-download-release() {
@@ -53,11 +53,11 @@ fn-require-bin() {
 }
 
 main() {
-  local RELEASE="$1"
+  local RELEASE="$1" AWS_RELEASE="$2"
   local CURRENT_VERSION FILENAME NEXT_VERSION ORG_REPO_NAME REPO_NAME major minor patch
 
   if [[ -z "$RELEASE" ]]; then
-    cat<<'EOF'
+    cat <<'EOF'
 requirements:
 
 - this is run in a plugin folder
@@ -91,20 +91,24 @@ EOF
 
   fn-require-bin "git"
 
-  if [[ "$CI" != "true" ]] && [[ -z "$DOKKU_PLUGIN_GITHUB_ACCESS_TOKEN" ]]; then
+  if [[ "$AWS_RELEASE" != "true" ]] && [[ "$AWS_RELEASE" != "false" ]]; then
+    local AWS_RELEASE=true
+  fi
+
+  if [[ "$AWS_RELEASE" == "true" ]] && [[ -z "$DOKKU_PLUGIN_GITHUB_ACCESS_TOKEN" ]]; then
     log-info "You are running this without a DOKKU_PLUGIN_GITHUB_ACCESS_TOKEN environment variable."
     log-info "Doing so disables uploading releases to S3, which may be necessary for installing private plugins."
     while true; do
       read -rp "Do you wish to continue? " yn
       case $yn in
-          [Yy]* ) break;;
-          [Nn]* ) exit;;
-          * ) echo "Please answer yes or no.";;
+        [Yy]*) break ;;
+        [Nn]*) exit ;;
+        *) echo "Please answer yes or no." ;;
       esac
     done
   fi
 
-  if [[ -n "$DOKKU_PLUGIN_GITHUB_ACCESS_TOKEN" ]]; then
+  if [[ "$AWS_RELEASE" == "true" ]]; then
     fn-require-bin "aws"
     fn-require-bin "curl"
     if [[ -z "$DOKKU_PLUGIN_S3_BUCKET" ]]; then
@@ -131,19 +135,19 @@ EOF
   patch=$(echo "$CURRENT_VERSION" | awk '{split($0,a,"."); print a[3]}')
 
   if [[ "$RELEASE" == "major" ]]; then
-    major=$((major + 1));
+    major=$((major + 1))
     minor="0"
     patch="0"
   elif [[ "$RELEASE" == "minor" ]]; then
-    minor=$((minor + 1));
+    minor=$((minor + 1))
     patch="0"
   elif [[ "$RELEASE" == "patch" ]]; then
-    patch=$((patch + 1));
+    patch=$((patch + 1))
   else
     log-error "Invalid release type specified"
     return 1
   fi
-  NEXT_VERSION="${major}.${minor}.${patch}"  
+  NEXT_VERSION="${major}.${minor}.${patch}"
 
   fn-replace-version "$CURRENT_VERSION" "$NEXT_VERSION" plugin.toml
   git add plugin.toml
@@ -156,14 +160,14 @@ EOF
   REPO_NAME="$(echo "$ORG_REPO_NAME" | cut -d'/' -f2)"
   FILENAME="${REPO_NAME}-${NEXT_VERSION}.tar.gz"
 
-  if [[ -n "$DOKKU_PLUGIN_GITHUB_ACCESS_TOKEN" ]]; then
+  if [[ "$AWS_RELEASE" == "true" ]]; then
     DOKKU_PLUGIN_S3_BUCKET="${DOKKU_PLUGIN_S3_BUCKET%/}"
     DOKKU_PLUGIN_S3_PATH="${DOKKU_PLUGIN_S3_PATH%/}"
     if [[ "$DOKKU_PLUGIN_S3_PATH" != "/" ]]; then
       DOKKU_PLUGIN_S3_PATH="${DOKKU_PLUGIN_S3_PATH}/"
     fi
 
-    fn-github-download-release "$ORG_REPO_NAME" "$NEXT_VERSION" > "${TMP_WORK_DIR}/${FILENAME}"
+    fn-github-download-release "$ORG_REPO_NAME" "$NEXT_VERSION" >"${TMP_WORK_DIR}/${FILENAME}"
     aws s3 cp "${TMP_WORK_DIR}/${FILENAME}" "s3://${DOKKU_PLUGIN_S3_BUCKET}/${DOKKU_PLUGIN_S3_PATH}${FILENAME}" --acl public-read
   fi
 }
